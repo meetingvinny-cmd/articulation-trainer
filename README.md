@@ -105,7 +105,7 @@ and they are practice takes, not history. A future `/redevelop` skill reads this
         ],
         "words":   [ { "id": "seed300::mitigate", "box": 3, "due_date": "2026-09-10",
                        "seen_count": 4, "correct_count": 3, "miss_count": 1 } ],
-        "people":  [ { "id": "uuid", "name": "Kevin", "last_touch_date": "2026-09-06",
+        "people":  [ { "id": "uuid", "name": "Sam", "last_touch_date": "2026-09-06",
                        "touch_count": 6, "ask_count": 4 } ],
         "touches": [ { "id": "uuid", "person_id": "uuid", "date": "2026-09-06",
                        "channel": "call", "made_an_ask": true } ],
