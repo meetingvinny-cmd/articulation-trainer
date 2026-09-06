@@ -3,6 +3,11 @@
 
 import { db, uuid, today, addDays, daysBetween } from './db.js';
 import {
+  splitSentences, enableVoice, speak, stopSpeaking, speechSupported,
+  playUrl, playBlob, stopPlayback, sayPassage, Recorder, recordingSupported,
+  micPermission, releaseMic, keepAwake, letSleep
+} from './audio.js';
+import {
   seedIfNeeded, dueWords, nextCardState, deckMastery, streakInfo,
   todaysDrill, coldestPerson, daysSince, connectStats, storageInfo, pruneClips
 } from './logic.js';
@@ -14,7 +19,7 @@ const $ = (id) => document.getElementById(id);
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-const SCREENS = ['install','home','words','connect','log','people','person','done','settings'];
+const SCREENS = ['install','home','shadow','paste','pick','words','connect','log','people','person','done','settings'];
 
 let session = null;      // the live session row
 let queue = [];          // remaining step names
@@ -75,6 +80,14 @@ async function boot() {
   // Register before any early return, otherwise sitting on the install screen
   // means the offline cache never gets built.
   if ('serviceWorker' in navigator) {
+    // When a new version takes over, reload once so he is never drilling against
+    // yesterday's build. The guard stops the reload loop.
+    let reloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (reloaded) return;
+      reloaded = true;
+      location.reload();
+    });
     navigator.serviceWorker.register('sw.js').catch(() => { /* offline is a bonus, never a blocker */ });
   }
 
@@ -197,6 +210,249 @@ async function feedbackLine(r, mastery) {
   return 'Done. Same time tomorrow.';
 }
 
+
+// ---------------- clips ----------------
+
+async function saveClip(repId, rec) {
+  if (!rec || !rec.blob) return null;
+  const id = uuid();
+  await db.put('clips', {
+    id, rep_id: repId, created_at: new Date().toISOString(),
+    mime: rec.mime, blob: rec.blob, duration_sec: rec.duration_sec, keep: false
+  });
+  return id;
+}
+
+// ---------------- SHADOW ----------------
+
+STEPS.shadow = {
+  label: 'Shadow',
+  note: 'Repeat after the voice, sentence by sentence',
+  run: runShadow
+};
+
+const sh = {
+  text: null, idx: 0, rec: null, handsFree: true, running: false,
+  modelClip: null, myClip: null, aborted: false, reps: 0
+};
+
+async function runShadow() {
+  sh.handsFree = await db.setting('hands_free', true);
+  sh.aborted = false;
+  sh.reps = 0;
+  sh.text = await pickPassage();
+  if (!sh.text) { toast('No passages loaded'); return nextStep(); }
+  show('shadow');
+  renderShadowIntro();
+}
+
+async function pickPassage() {
+  const texts = await db.all('texts');
+  if (!texts.length) return null;
+  texts.sort((a, b) => (a.times_used || 0) - (b.times_used || 0) || String(a.id).localeCompare(String(b.id)));
+  return texts[0];
+}
+
+function renderShadowIntro() {
+  $('shadow-intro').hidden = false;
+  $('shadow-run').hidden = true;
+  $('shadow-rate').hidden = true;
+  $('shadow-sub').textContent = sh.text.sentences.length + ' sentences, about 3 minutes';
+  $('shadow-title').textContent = sh.text.title;
+  $('shadow-preview').textContent = sh.text.body;
+  $('shadow-hf').textContent = sh.handsFree ? 'On' : 'Off';
+  $('shadow-actions').innerHTML = '<button class="primary huge" id="sh-go">Start</button>';
+  $('sh-go').onclick = startShadow;
+}
+
+async function startShadow() {
+  // Everything that needs a user gesture happens right here, in the tap.
+  await enableVoice();
+  const mic = await micPermission();
+  if (!mic.ok) toast(mic.reason, 4000);
+  await keepAwake();
+  sh.idx = 0;
+  sh.running = true;
+  $('shadow-intro').hidden = true;
+  $('shadow-run').hidden = false;
+  $('shadow-actions').innerHTML = '<button class="huge" id="sh-stop">Stop</button>';
+  $('sh-stop').onclick = abortShadow;
+  shadowLoop();
+}
+
+function shadowState(s) { $('shadow-state').textContent = s; }
+
+async function shadowLoop() {
+  while (sh.running && sh.idx < sh.text.sentences.length) {
+    const line = sh.text.sentences[sh.idx];
+    $('shadow-count').textContent = (sh.idx + 1) + ' of ' + sh.text.sentences.length;
+    $('shadow-line').textContent = line;
+
+    // 1. the model says it
+    shadowState('Listen');
+    const audioPath = (sh.text.sentence_audio || [])[sh.idx] || null;
+    await sayPassage(line, audioPath);
+    if (!sh.running) break;
+
+    // 2. his turn, recorded
+    shadowState('Your turn');
+    const r = new Recorder();
+    let got = null;
+    try {
+      await r.start();
+      const ms = Math.max(2500, line.length * 75);
+      if (sh.handsFree) await waitOrTap(ms);
+      else await waitForTap('Done');
+      got = await r.stop();
+    } catch (e) {
+      // no microphone is not a reason to stop drilling
+      shadowState('No mic, say it anyway');
+      await waitOrTap(Math.max(2500, line.length * 75));
+    }
+    if (!sh.running) break;
+
+    // 3. model then self, back to back
+    if (got && got.blob && got.blob.size > 800) {
+      shadowState('Model');
+      await sayPassage(line, audioPath);
+      if (!sh.running) break;
+      shadowState('You');
+      await playBlob(got.blob, got.duration_sec);
+      const repId = uuid();
+      const clipId = await saveClip(repId, got);
+      await db.put('reps', {
+        id: repId, session_id: session.id, mode: 'shadow', created_at: new Date().toISOString(),
+        prompt_id: sh.text.id, target_text: line, transcript: null, transcript_source: 'none',
+        duration_sec: got.duration_sec, clip_id: clipId, self_rating: null, notes: null
+      });
+      sh.reps++;
+    }
+    sh.idx++;
+  }
+  if (!sh.running) return;
+  await coldRead();
+}
+
+async function coldRead() {
+  $('shadow-count').textContent = 'Cold read';
+  $('shadow-line').textContent = sh.text.body;
+  shadowState('Read the whole thing');
+  const r = new Recorder();
+  let got = null;
+  try {
+    await r.start();
+    const ms = Math.max(8000, sh.text.body.length * 60);
+    if (sh.handsFree) await waitOrTap(ms); else await waitForTap('Done');
+    got = await r.stop();
+  } catch (e) { await waitOrTap(6000); }
+
+  if (got && got.blob && got.blob.size > 800) {
+    const repId = uuid();
+    const clipId = await saveClip(repId, got);
+    await db.put('reps', {
+      id: repId, session_id: session.id, mode: 'shadow', created_at: new Date().toISOString(),
+      prompt_id: sh.text.id, target_text: sh.text.body, transcript: null, transcript_source: 'none',
+      duration_sec: got.duration_sec, clip_id: clipId, self_rating: null, notes: 'cold read'
+    });
+    sh.reps++;
+    sh.myClip = got.blob;
+  }
+  await db.put('texts', { ...sh.text, times_used: (sh.text.times_used || 0) + 1 });
+  finishShadow();
+}
+
+function finishShadow() {
+  sh.running = false;
+  letSleep();
+  releaseMic();
+  stopSpeaking();
+  stopPlayback();
+  $('shadow-run').hidden = true;
+  $('shadow-rate').hidden = false;
+  $('shadow-sub').textContent = sh.reps + ' takes recorded';
+  $('shadow-rate-btns').innerHTML = [1, 2, 3, 4, 5]
+    .map(n => '<button id="sh-r' + n + '">' + n + '</button>').join('');
+  $('shadow-actions').innerHTML = '<div class="small muted center" style="width:100%">1 is nothing like it, 5 is word for word</div>';
+  for (const n of [1, 2, 3, 4, 5]) {
+    $('sh-r' + n).onclick = async () => {
+      results.shadow_rating = n;
+      await db.put('reps', {
+        id: uuid(), session_id: session.id, mode: 'shadow', created_at: new Date().toISOString(),
+        prompt_id: sh.text.id, target_text: null, transcript: null, transcript_source: 'none',
+        self_rating: n, notes: 'session self rating'
+      });
+      nextStep();
+    };
+  }
+}
+
+function abortShadow() {
+  sh.running = false;
+  stopSpeaking();
+  stopPlayback();
+  letSleep();
+  releaseMic();
+  if (sh.reps > 0) return finishShadow();
+  nextStep('shadow');
+}
+
+// A wait that any tap can cut short. This is what makes hands free bearable:
+// the timer is the default, the tap is the override.
+let tapResolver = null;
+function waitOrTap(ms) {
+  return new Promise((resolve) => {
+    let done = false;
+    const fin = () => { if (done) return; done = true; tapResolver = null; document.removeEventListener('click', onTap, true); resolve(); };
+    const onTap = (e) => { if (e.target && e.target.id === 'sh-stop') return; e.preventDefault(); e.stopPropagation(); fin(); };
+    tapResolver = fin;
+    document.addEventListener('click', onTap, true);
+    setTimeout(fin, ms);
+  });
+}
+function waitForTap(label) {
+  return new Promise((resolve) => {
+    $('shadow-actions').innerHTML =
+      '<div class="btnrow"><button id="sh-stop">Stop</button><button class="primary" id="sh-next">' + label + '</button></div>';
+    $('sh-stop').onclick = abortShadow;
+    $('sh-next').onclick = () => resolve();
+  });
+}
+
+// ---------------- paste and pick ----------------
+
+async function openPaste() {
+  $('paste-title').value = '';
+  $('paste-body').value = '';
+  show('paste');
+}
+
+async function savePaste() {
+  const body = $('paste-body').value.trim();
+  if (body.length < 20) { toast('That is too short to shadow'); return; }
+  const t = {
+    id: uuid(), title: $('paste-title').value.trim() || 'My text', body,
+    source_type: 'own_paste', license_note: 'His own text, typed into the app on this device.',
+    sentences: splitSentences(body), sentence_audio: [], audio: null,
+    added_at: new Date().toISOString(), times_used: 0
+  };
+  await db.put('texts', t);
+  sh.text = t;
+  show('shadow');
+  renderShadowIntro();
+}
+
+async function openPick() {
+  const texts = await db.all('texts');
+  $('pick-list').innerHTML = texts.map(t =>
+    '<li class="pick-row" data-id="' + t.id + '"><b>' + escapeHtml(t.title) + '</b>' +
+    '<div class="small muted">' + t.sentences.length + ' sentences, used ' + (t.times_used || 0) + ' times' +
+    ((t.sentence_audio && t.sentence_audio.length) ? ', recorded voice' : ', phone voice') + '</div></li>').join('');
+  for (const el of document.querySelectorAll('.pick-row')) {
+    el.onclick = async () => { sh.text = await db.get('texts', el.dataset.id); show('shadow'); renderShadowIntro(); };
+  }
+  show('pick');
+}
+
 // ---------------- WORDS ----------------
 
 STEPS.words = {
@@ -205,19 +461,23 @@ STEPS.words = {
   run: runWords
 };
 
-let wq = [], wIdx = 0, wCorrect = 0, wKnew = false, wSpokenMissed = 0;
+let wq = [], wIdx = 0, wCorrect = 0, wKnew = false, wSpokenMissed = 0, wHandsFree = false;
 
 async function runWords() {
   const n = results.floor ? 5 : 10;
   wq = await dueWords(n);
   wIdx = 0; wCorrect = 0; wSpokenMissed = 0;
+  wHandsFree = await db.setting('words_hands_free', false);
+  $('words-hf').textContent = wHandsFree ? 'On' : 'Off';
   if (!wq.length) { toast('No cards available'); return nextStep(); }
   show('words');
+  if (wHandsFree) { await enableVoice(); await keepAwake(); }
   renderWordFront();
 }
 
 function renderWordFront() {
   const c = wq[wIdx];
+  wSpeakQueue(c);
   $('words-progress').textContent = (wIdx + 1) + ' of ' + wq.length;
   $('words-tier').textContent = (c.deck === 'verbal_advantage' ? 'Verbal Advantage' : c.tier_label || '');
   $('words-word').textContent = c.word;
@@ -227,23 +487,39 @@ function renderWordFront() {
   $('w-reveal').onclick = renderWordBack;
 }
 
-function renderWordBack() {
+// Hands free words: the phone says the word, gives him room to answer out loud,
+// then reads the meaning and the example. He only ever taps knew or missed, and
+// both targets fill half the screen.
+let wTimer = null;
+function wClearTimer() { if (wTimer) { clearTimeout(wTimer); wTimer = null; } }
+
+async function wSpeakQueue(c) {
+  wClearTimer();
+  if (!wHandsFree) return;
+  await speak(c.word, { rate: 0.9 });
+  wTimer = setTimeout(() => { if (!$('s-words').hidden && $('words-back').hidden) renderWordBack(); }, 4500);
+}
+
+async function renderWordBack() {
+  wClearTimer();
   const c = wq[wIdx];
   $('words-def').textContent = c.definition;
   $('words-ex').textContent = c.example_sentence;
   $('words-back').hidden = false;
   $('words-actions').innerHTML =
     '<div class="btnrow"><button id="w-miss">Missed it</button><button class="primary" id="w-knew">Knew it</button></div>';
-  $('w-miss').onclick = () => { wKnew = false; finishCard(false, false); };
-  $('w-knew').onclick = () => { wKnew = true; askForSentence(); };
+  $('w-miss').onclick = () => { wClearTimer(); wKnew = false; finishCard(false, false); };
+  $('w-knew').onclick = () => { wClearTimer(); wKnew = true; askForSentence(); };
+  if (wHandsFree) await speak(c.definition + '. ' + c.example_sentence, { rate: 0.95 });
 }
 
 function askForSentence() {
   $('words-speak').hidden = false;
   $('words-actions').innerHTML =
     '<div class="btnrow"><button id="w-nos">Could not</button><button class="primary" id="w-said">Said it</button></div>';
-  $('w-nos').onclick = () => { wSpokenMissed++; finishCard(true, false); };
-  $('w-said').onclick = () => finishCard(true, true);
+  $('w-nos').onclick = () => { wClearTimer(); wSpokenMissed++; finishCard(true, false); };
+  $('w-said').onclick = () => { wClearTimer(); finishCard(true, true); };
+  if (wHandsFree) speak('Say it in a sentence', { rate: 1 });
 }
 
 async function finishCard(knew, spoke) {
@@ -258,6 +534,7 @@ async function finishCard(knew, spoke) {
   if (knew) wCorrect++;
   wIdx++;
   if (wIdx >= wq.length) {
+    wClearTimer(); stopSpeaking(); letSleep();
     results.cards_total = wq.length;
     results.cards_correct = wCorrect;
     results.spoken_missed = wSpokenMissed || 0;
@@ -396,6 +673,13 @@ async function renderSettings() {
     words.filter(w => w.deck === 'seed300').length + ' core words, ' +
     words.filter(w => w.deck === 'verbal_advantage').length + ' Verbal Advantage words.';
 
+  $('voice-note').textContent = speechSupported()
+    ? 'Tap once, then the app can read to you. iOS will not release the voice list until you do.'
+    : 'This browser has no built in voice. Pre recorded passages still work.';
+  $('audio-note').textContent = recordingSupported()
+    ? 'The microphone is available on this browser.'
+    : 'This browser cannot record. Shadow still plays, it just will not record you.';
+
   const inst = await db.setting('install_date', today());
   $('about-note').textContent = 'Installed ' + inst + '. Everything is stored on this device only. Nothing is uploaded, there is no account and no key in this app.';
   show('settings');
@@ -407,6 +691,28 @@ async function toggleVaDeck() {
   const turningOn = !va.some(w => w.active !== false);
   await db.putAll('words', va.map(w => ({ ...w, active: turningOn })));
   renderSettings();
+}
+
+async function downloadAllAudio() {
+  const texts = await db.all('texts');
+  const urls = [];
+  for (const t of texts) {
+    if (t.audio) urls.push(t.audio);
+    for (const s of (t.sentence_audio || [])) urls.push(s);
+  }
+  if (!urls.length) { $('audio-note').textContent = 'No recorded audio in this build.'; return; }
+  $('audio-note').textContent = 'Downloading 0 of ' + urls.length + '.';
+  let ok = 0, failed = 0;
+  for (let i = 0; i < urls.length; i++) {
+    try {
+      const r = await fetch(urls[i], { cache: 'reload' });
+      if (r.ok) ok++; else failed++;
+    } catch (e) { failed++; }
+    if (i % 10 === 0 || i === urls.length - 1) {
+      $('audio-note').textContent = 'Downloading ' + (i + 1) + ' of ' + urls.length + '.';
+    }
+  }
+  $('audio-note').textContent = ok + ' files cached, ' + failed + ' failed. Shadow now works with no signal.';
 }
 
 async function doExport() {
@@ -444,7 +750,34 @@ function wire() {
   $('home-start').onclick = startSession;
   $('to-settings').onclick = renderSettings;
 
-  $('words-quit').onclick = () => nextStep('words');
+  $('words-quit').onclick = () => { wClearTimer(); stopSpeaking(); letSleep(); nextStep('words'); };
+  $('words-hf').onclick = async () => {
+    wHandsFree = !wHandsFree;
+    await db.setSetting('words_hands_free', wHandsFree);
+    $('words-hf').textContent = wHandsFree ? 'On' : 'Off';
+    if (wHandsFree) { await enableVoice(); await keepAwake(); toast('Hands free on. It reads to you and advances itself.'); }
+    else { stopSpeaking(); wClearTimer(); }
+  };
+
+  $('shadow-quit').onclick = abortShadow;
+  $('shadow-change').onclick = openPick;
+  $('shadow-paste').onclick = openPaste;
+  $('shadow-hf').onclick = async () => {
+    sh.handsFree = !sh.handsFree;
+    await db.setSetting('hands_free', sh.handsFree);
+    $('shadow-hf').textContent = sh.handsFree ? 'On' : 'Off';
+  };
+  $('paste-cancel').onclick = () => { show('shadow'); renderShadowIntro(); };
+  $('paste-save').onclick = savePaste;
+  $('pick-cancel').onclick = () => { show('shadow'); renderShadowIntro(); };
+
+  $('enable-voice').onclick = async () => {
+    const r = await enableVoice();
+    $('voice-note').textContent = r.ok
+      ? 'On. Reading with ' + r.voice + '.'
+      : r.reason;
+  };
+  $('download-audio').onclick = downloadAllAudio;
 
   $('connect-quit').onclick = () => nextStep('connect');
   $('connect-snooze').onclick = async () => {
@@ -493,6 +826,6 @@ function wire() {
 }
 
 // expose a few things for the harness tests, never used by the UI
-window.__artic = { db, show, seedIfNeeded, dueWords, nextCardState, streakInfo, storageInfo };
+window.__artic = { db, show, seedIfNeeded, dueWords, nextCardState, streakInfo, storageInfo, STEPS, splitSentences, sh, pickPassage };
 
 boot();

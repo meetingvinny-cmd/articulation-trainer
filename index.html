@@ -66,11 +66,66 @@
     </div></div>
   </section>
 
+
+  <!-- ============ SHADOW ============ -->
+  <section id="s-shadow" hidden>
+    <div class="topbar">
+      <div><h2 style="margin:0">Shadow</h2><div class="muted small" id="shadow-sub">-</div></div>
+      <button id="shadow-quit">Skip</button>
+    </div>
+
+    <div id="shadow-intro" class="card stack">
+      <div class="muted small" id="shadow-title">-</div>
+      <p id="shadow-preview" class="small muted" style="max-height:120px;overflow:auto"></p>
+      <button class="ghost small" id="shadow-change" style="width:100%">Different passage</button>
+      <button class="ghost small" id="shadow-paste" style="width:100%">Paste my own text</button>
+      <div class="row" style="justify-content:space-between">
+        <span class="small muted">Hands free, for the car</span>
+        <button class="small" id="shadow-hf" style="width:auto">On</button>
+      </div>
+    </div>
+
+    <div id="shadow-run" hidden class="card grow center" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="muted small" id="shadow-count">-</div>
+      <div class="def" id="shadow-line" style="font-size:22px;margin:14px 0">-</div>
+      <div class="bignum" id="shadow-state">-</div>
+    </div>
+
+    <div id="shadow-rate" hidden class="card stack">
+      <h3>How close were you</h3>
+      <div class="btnrow" id="shadow-rate-btns"></div>
+    </div>
+
+    <div class="footbar"><div class="footbar-inner" id="shadow-actions"></div></div>
+  </section>
+
+  <!-- ============ PASTE ============ -->
+  <section id="s-paste" hidden>
+    <div class="topbar"><h2 style="margin:0">Paste text</h2><button id="paste-cancel">Cancel</button></div>
+    <div class="card stack">
+      <div><label>Title</label><input id="paste-title" placeholder="supplier call script" autocomplete="off"></div>
+      <div><label>The text. It gets split into sentences and read back to you.</label>
+        <textarea id="paste-body" rows="10"></textarea></div>
+      <div class="small muted">Pasted text is read by the phone voice, not the recorded one. It never leaves the phone.</div>
+    </div>
+    <div class="footbar"><div class="footbar-inner"><button class="primary" id="paste-save">Use this</button></div></div>
+  </section>
+
+  <!-- ============ PICK PASSAGE ============ -->
+  <section id="s-pick" hidden>
+    <div class="topbar"><h2 style="margin:0">Pick a passage</h2><button id="pick-cancel">Cancel</button></div>
+    <ul class="list card" id="pick-list"></ul>
+  </section>
+
   <!-- ============ WORDS ============ -->
   <section id="s-words" hidden>
     <div class="topbar">
       <div><h2 style="margin:0">Words</h2><div class="muted small" id="words-progress"></div></div>
       <button id="words-quit">Skip</button>
+    </div>
+    <div class="row" style="justify-content:space-between;margin-bottom:10px">
+      <span class="small muted">Hands free, for the car</span>
+      <button class="small" id="words-hf" style="width:auto">Off</button>
     </div>
     <div class="card grow">
       <div class="muted small" id="words-tier"></div>
@@ -189,6 +244,14 @@
       <h3>Decks</h3>
       <button id="deck-va" class="ghost">Verbal Advantage deck: <span id="deck-va-state">off</span></button>
       <div class="small muted" id="deck-counts"></div>
+    </div>
+
+    <div class="card stack">
+      <h3>Voice and audio</h3>
+      <button id="enable-voice">Turn on the phone voice</button>
+      <div class="small muted" id="voice-note">Tap once, then the app can read to you. iOS will not release the voice list until you do.</div>
+      <button id="download-audio" class="ghost">Download all audio for offline</button>
+      <div class="small muted" id="audio-note"></div>
     </div>
 
     <div class="card stack">

@@ -7,6 +7,8 @@ import { db, uuid, today, addDays, daysBetween } from './db.js';
 export const LEITNER_DAYS = { 1: 1, 2: 2, 3: 4, 4: 8, 5: 16 };
 export const MASTERY_BOX = 4;      // box 4 or 5 counts as mastered
 export const CLIP_RETENTION_DAYS = 14;
+// Bump when data/texts.json gains fields the app needs.
+export const TEXTS_VERSION = 2;
 
 // ---------- seeding ----------
 
@@ -65,10 +67,17 @@ export async function seedIfNeeded() {
     report.prompts = p.prompts.length;
   }
 
-  if ((await db.count('texts')) === 0) {
+  // Bundled passages are re-seeded when the data version moves, so an existing
+  // install picks up new fields (sentence audio paths) without losing his own
+  // pasted texts, which carry a uuid id and are never in the bundle.
+  const textsVersion = await db.setting('texts_version', 0);
+  if ((await db.count('texts')) === 0 || textsVersion < TEXTS_VERSION) {
     const t = await loadJson('data/texts.json');
+    const own = (await db.all('texts')).filter(x => x.source_type === 'own_paste');
     await db.putAll('texts', t.texts);
+    await db.putAll('texts', own);
     report.texts = t.texts.length;
+    await db.setSetting('texts_version', TEXTS_VERSION);
   }
 
   if (!(await db.setting('structures'))) {

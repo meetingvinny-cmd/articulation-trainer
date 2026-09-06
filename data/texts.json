@@ -13,7 +13,12 @@
 "We are met on a great battlefield of that war."
 ],
 "audio": "audio/920db4daa44c15ed.mp3",
-"hash": "920db4daa44c15ed"
+"hash": "920db4daa44c15ed",
+"sentence_audio": [
+"audio/s_16b7310f53d595aa.mp3",
+"audio/s_952c8b296d0e9083.mp3",
+"audio/s_ebcac8084db33878.mp3"
+]
 },
 {
 "id": "t02",
@@ -26,7 +31,11 @@
 "That we here highly resolve that these dead shall not have died in vain, and that government of the people, by the people, for the people, shall not perish from the earth."
 ],
 "audio": "audio/383f2e155dd1918e.mp3",
-"hash": "383f2e155dd1918e"
+"hash": "383f2e155dd1918e",
+"sentence_audio": [
+"audio/s_229a108bd5619320.mp3",
+"audio/s_53d9e2cba22a9e19.mp3"
+]
 },
 {
 "id": "t03",
@@ -39,7 +48,11 @@
 "The credit belongs to the man who is actually in the arena, whose face is marred by dust and sweat and blood, who strives valiantly, who errs, who comes short again and again, because there is no effort without error and shortcoming."
 ],
 "audio": "audio/71e89bac50908bcb.mp3",
-"hash": "71e89bac50908bcb"
+"hash": "71e89bac50908bcb",
+"sentence_audio": [
+"audio/s_5f63d19662b9b049.mp3",
+"audio/s_47589e413816e0aa.mp3"
+]
 },
 {
 "id": "t04",
@@ -52,7 +65,11 @@
 "My fellow citizens of the world, ask not what America will do for you, but what together we can do for the freedom of man."
 ],
 "audio": "audio/b30d1dea308d5351.mp3",
-"hash": "b30d1dea308d5351"
+"hash": "b30d1dea308d5351",
+"sentence_audio": [
+"audio/s_37d003a932256f11.mp3",
+"audio/s_782f3367d2aba4eb.mp3"
+]
 },
 {
 "id": "t05",
@@ -64,7 +81,10 @@
 "With malice toward none, with charity for all, with firmness in the right as God gives us to see the right, let us strive on to finish the work we are in, to bind up the nation's wounds, to care for him who shall have borne the battle and for his widow and his orphan."
 ],
 "audio": "audio/1aecf3ae09ec48e2.mp3",
-"hash": "1aecf3ae09ec48e2"
+"hash": "1aecf3ae09ec48e2",
+"sentence_audio": [
+"audio/s_1aecf3ae09ec48e2.mp3"
+]
 },
 {
 "id": "t06",
@@ -79,7 +99,13 @@
 "And gentlemen in England now abed shall think themselves accursed they were not here."
 ],
 "audio": "audio/153cfdbd9475e9e4.mp3",
-"hash": "153cfdbd9475e9e4"
+"hash": "153cfdbd9475e9e4",
+"sentence_audio": [
+"audio/s_83f1e2172e17be0b.mp3",
+"audio/s_e271e4dab4da0bc2.mp3",
+"audio/s_df5761ff4f16b175.mp3",
+"audio/s_867ef0c3ae0ebe53.mp3"
+]
 },
 {
 "id": "t07",
@@ -98,7 +124,17 @@
 "If it went down, I find out why before lunch."
 ],
 "audio": "audio/05b95c3e215d9c3b.mp3",
-"hash": "05b95c3e215d9c3b"
+"hash": "05b95c3e215d9c3b",
+"sentence_audio": [
+"audio/s_4001a3a6403f9d64.mp3",
+"audio/s_e0009d63de5965d4.mp3",
+"audio/s_bd03bb709945f119.mp3",
+"audio/s_5989b9fc0fb75ee9.mp3",
+"audio/s_d5db9d06548f40ef.mp3",
+"audio/s_90d1e46c8e98b33e.mp3",
+"audio/s_2907f2083d436af6.mp3",
+"audio/s_d295f77c990a2210.mp3"
+]
 },
 {
 "id": "t08",
@@ -119,7 +155,19 @@
 "The explanation is where the apology hides."
 ],
 "audio": "audio/6b20ff8638b31620.mp3",
-"hash": "6b20ff8638b31620"
+"hash": "6b20ff8638b31620",
+"sentence_audio": [
+"audio/s_0df0c0f6251dbac6.mp3",
+"audio/s_08f324ebd260c8d1.mp3",
+"audio/s_0206cc08e0672b0c.mp3",
+"audio/s_4eb3e77479ebfa87.mp3",
+"audio/s_79919e3ebff8f226.mp3",
+"audio/s_78215d38b590e21b.mp3",
+"audio/s_2513d341f5f00e12.mp3",
+"audio/s_e12f38a458ce9e29.mp3",
+"audio/s_28804aeabe58f910.mp3",
+"audio/s_6c78d87e4c9bfa70.mp3"
+]
 },
 {
 "id": "t09",
@@ -136,7 +184,15 @@
 "Tell me now if it does not work for you."
 ],
 "audio": "audio/f853442e7a47a156.mp3",
-"hash": "f853442e7a47a156"
+"hash": "f853442e7a47a156",
+"sentence_audio": [
+"audio/s_858d6542d8aa7240.mp3",
+"audio/s_898b9f475c1b3ca4.mp3",
+"audio/s_d1b6fe26160ef14d.mp3",
+"audio/s_376db494fc302bd7.mp3",
+"audio/s_2444853e99a6512c.mp3",
+"audio/s_f8ac916b8d7c4260.mp3"
+]
 },
 {
 "id": "t10",
@@ -151,7 +207,13 @@
 "It is less glamorous than it sounds and more interesting than it sounds, both at once."
 ],
 "audio": "audio/f3a925e201f7a62a.mp3",
-"hash": "f3a925e201f7a62a"
+"hash": "f3a925e201f7a62a",
+"sentence_audio": [
+"audio/s_9072819c3e3061d4.mp3",
+"audio/s_23f145715995946a.mp3",
+"audio/s_238b7381e55df4e2.mp3",
+"audio/s_31884ab448a41a80.mp3"
+]
 },
 {
 "id": "t11",
@@ -169,7 +231,16 @@
 "It is just protecting the only clean hour on the board."
 ],
 "audio": "audio/a1bc73a930da66df.mp3",
-"hash": "a1bc73a930da66df"
+"hash": "a1bc73a930da66df",
+"sentence_audio": [
+"audio/s_2bbcfd2706b398a4.mp3",
+"audio/s_b0cc9c64a0c8cc10.mp3",
+"audio/s_eb5c8e485323a3e8.mp3",
+"audio/s_743eaa81122b9107.mp3",
+"audio/s_2d86ca3139af7fef.mp3",
+"audio/s_fe5013d5247a438e.mp3",
+"audio/s_cb8b059741e37c32.mp3"
+]
 },
 {
 "id": "t12",
@@ -188,7 +259,17 @@
 "Then tell them, out loud, that they were the reason it worked."
 ],
 "audio": "audio/d394a5ded8e00f10.mp3",
-"hash": "d394a5ded8e00f10"
+"hash": "d394a5ded8e00f10",
+"sentence_audio": [
+"audio/s_056fd3243e4bbc79.mp3",
+"audio/s_f0ca60a316c81c93.mp3",
+"audio/s_9468bf3d98d4888a.mp3",
+"audio/s_70be4bfa7d2883c8.mp3",
+"audio/s_24d0a60cfd9cc77c.mp3",
+"audio/s_37e785bcf45578c0.mp3",
+"audio/s_38e056cc891eb363.mp3",
+"audio/s_c3e7c82f79fefd9a.mp3"
+]
 },
 {
 "id": "t13",
@@ -204,7 +285,14 @@
 "That is worth more to you than a dollar."
 ],
 "audio": "audio/9bdd0ec9517d94dc.mp3",
-"hash": "9bdd0ec9517d94dc"
+"hash": "9bdd0ec9517d94dc",
+"sentence_audio": [
+"audio/s_aef5cee2d320aa3d.mp3",
+"audio/s_d39e35158dae9d70.mp3",
+"audio/s_7627bfb3097b2567.mp3",
+"audio/s_4ddea9349a9c6a20.mp3",
+"audio/s_24bbbbfbb5f6d436.mp3"
+]
 },
 {
 "id": "t14",
@@ -223,7 +311,17 @@
 "With it I sound like someone who knew what he was going to say, because I did."
 ],
 "audio": "audio/7a99cd3d3cc20354.mp3",
-"hash": "7a99cd3d3cc20354"
+"hash": "7a99cd3d3cc20354",
+"sentence_audio": [
+"audio/s_80a38ec31d828b97.mp3",
+"audio/s_202faec0b45a259a.mp3",
+"audio/s_749b98019869ef05.mp3",
+"audio/s_3beae7b9996fe9cb.mp3",
+"audio/s_19fa448f9cdec915.mp3",
+"audio/s_0fd6c010f433455b.mp3",
+"audio/s_73a98115911ec511.mp3",
+"audio/s_99ba4626ed95cdf9.mp3"
+]
 },
 {
 "id": "t15",
@@ -240,7 +338,15 @@
 "The moment I let it become a decision again, it becomes a negotiation, and I lose those."
 ],
 "audio": "audio/a5b3479d9556e408.mp3",
-"hash": "a5b3479d9556e408"
+"hash": "a5b3479d9556e408",
+"sentence_audio": [
+"audio/s_00a753df429fb823.mp3",
+"audio/s_8d56804f0046831a.mp3",
+"audio/s_6bfff44e5602c036.mp3",
+"audio/s_cdbae0fa72348a75.mp3",
+"audio/s_625bd58787ff56f6.mp3",
+"audio/s_bfbce52b24a14bb3.mp3"
+]
 },
 {
 "id": "t16",
@@ -257,7 +363,15 @@
 "Nothing about your side changes."
 ],
 "audio": "audio/708159887ff709cc.mp3",
-"hash": "708159887ff709cc"
+"hash": "708159887ff709cc",
+"sentence_audio": [
+"audio/s_ddcdd445d8a9b1da.mp3",
+"audio/s_2b03a6445d57de15.mp3",
+"audio/s_8e55a03ecc861df8.mp3",
+"audio/s_29d0efe223901be9.mp3",
+"audio/s_d7d7eab017fd7983.mp3",
+"audio/s_9f49abc2e76d129b.mp3"
+]
 },
 {
 "id": "t17",
@@ -273,7 +387,14 @@
 "I wanted you to know I noticed."
 ],
 "audio": "audio/9a21d77b538a35a2.mp3",
-"hash": "9a21d77b538a35a2"
+"hash": "9a21d77b538a35a2",
+"sentence_audio": [
+"audio/s_002f1fc4b40e3e7f.mp3",
+"audio/s_8e8507af39a552f4.mp3",
+"audio/s_f828a00f78a5fa75.mp3",
+"audio/s_c895c60b0137d036.mp3",
+"audio/s_a1cb395efdd32910.mp3"
+]
 },
 {
 "id": "t18",
@@ -291,7 +412,16 @@
 "Just decided."
 ],
 "audio": "audio/b17f85c560bb62f4.mp3",
-"hash": "b17f85c560bb62f4"
+"hash": "b17f85c560bb62f4",
+"sentence_audio": [
+"audio/s_1a1bbb379a17fc63.mp3",
+"audio/s_67e6e4ad6abec878.mp3",
+"audio/s_278e8deff38f7159.mp3",
+"audio/s_ef479be5489fd797.mp3",
+"audio/s_3c09a73c534231bb.mp3",
+"audio/s_a1a69a579c5149c0.mp3",
+"audio/s_676abcb75d14c93f.mp3"
+]
 },
 {
 "id": "t19",
@@ -306,7 +436,13 @@
 "If Thursday moves, you hear it from me the same hour."
 ],
 "audio": "audio/6e8df99e7e83f9dc.mp3",
-"hash": "6e8df99e7e83f9dc"
+"hash": "6e8df99e7e83f9dc",
+"sentence_audio": [
+"audio/s_c06d4088ad03a8d5.mp3",
+"audio/s_0f1b86fd177836b5.mp3",
+"audio/s_7463b2d7e2a7e43d.mp3",
+"audio/s_1bf3ee35e316adb4.mp3"
+]
 },
 {
 "id": "t20",
@@ -327,7 +463,19 @@
 "The pause is the part they remember."
 ],
 "audio": "audio/a11a60edaab7d29c.mp3",
-"hash": "a11a60edaab7d29c"
+"hash": "a11a60edaab7d29c",
+"sentence_audio": [
+"audio/s_f723f9e199a39db1.mp3",
+"audio/s_7fe06a65b31111a3.mp3",
+"audio/s_ab1c8cd47abfbd85.mp3",
+"audio/s_7ed32b9cf1f1ba54.mp3",
+"audio/s_d85cef4bd58f10f6.mp3",
+"audio/s_ef28061c928c5dfd.mp3",
+"audio/s_c280d6fbfcd1da49.mp3",
+"audio/s_8dfd80ba047e575b.mp3",
+"audio/s_5862312aed5520a6.mp3",
+"audio/s_754b4fb709bcaeb3.mp3"
+]
 }
 ]
 }
