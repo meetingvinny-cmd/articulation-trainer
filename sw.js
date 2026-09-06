@@ -1,5 +1,5 @@
 // sw.js - offline shell. Bump CACHE on every deploy or the old files stick.
-const CACHE = 'artic-v3-m3';
+const CACHE = 'artic-v4-m4';
 
 const SHELL = [
   './',
@@ -10,6 +10,8 @@ const SHELL = [
   'logic.js',
   'audio.js',
   'score.js',
+  'progress.js',
+  'grade.js',
   'manifest.webmanifest',
   'data/words.json',
   'data/words_va.json',

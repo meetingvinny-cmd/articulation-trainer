@@ -381,6 +381,152 @@ def main():
         check("the app can tell standalone from a browser tab, which is what the phone test needs",
               st["standalone"] is False, st)
 
+
+        print("\n== progress screen ==")
+        prog = page.evaluate("""async () => {
+            const P = await import('./progress.js');
+            const T='2026-09-06';
+            const mk=(d,v)=>({created_at:d+'T08:00:00.000Z', filler_rate:v, wpm:v?140:null});
+            const reps=[mk('2026-09-01',8),mk('2026-09-01',6),mk('2026-09-03',5),mk('2026-09-06',3)];
+            const s=P.dailySeries(reps,'filler_rate',30,T);
+            const t=P.trend(s);
+            const empty=P.dailySeries([], 'filler_rate', 30, T);
+            return {
+              len:s.length,
+              gapsAreNull: s.filter(p=>p.value===null).length,
+              averagedSameDay: s.find(p=>p.date==='2026-09-01').value,
+              latest: t.latest, delta: t.delta, n: t.n,
+              svg: P.sparkline(s,{lowerIsBetter:true}).slice(0,40),
+              tooFew: P.sparkline(empty).indexOf('Not enough') >= 0,
+              band: P.sparkline(P.dailySeries(reps,'wpm',30,T),{band:[130,160]}).indexOf('rect') >= 0,
+              skips: P.skipReport([{modes_skipped:['clear']},{modes_skipped:['clear','frame']}]),
+              noSkips: P.skipReport([{modes_skipped:[]}])
+            };
+        }""")
+        # 4 reps across 3 distinct days, so 27 of the 30 slots are gaps.
+        check("30 day series, one point a day, missing days are gaps not zeros",
+              prog["len"] == 30 and prog["gapsAreNull"] == 27, prog)
+        check("two reps on one day are averaged, not double counted",
+              prog["averagedSameDay"] == 7, prog["averagedSameDay"])
+        check("the trend reports the latest value and a direction",
+              prog["latest"] == 3 and prog["delta"] is not None, (prog["latest"], prog["delta"]))
+        check("the sparkline renders as inline svg with no library",
+              prog["svg"].startswith("<svg"), prog["svg"])
+        check("under two data points it says so instead of drawing a lie", prog["tooFew"])
+        check("the words per minute chart draws the target band", prog["band"])
+        check("the skip report names the mode he dodges most",
+              "clear" in prog["skips"] and "not skipped" in prog["noSkips"], [prog["skips"], prog["noSkips"]])
+
+        prog2 = page.evaluate("""async () => {
+            const $=id=>document.getElementById(id);
+            const a=window.__artic;
+            await a.renderProgress();
+            const vis=[...document.querySelectorAll('section')].filter(s=>!s.hidden).map(s=>s.id)[0];
+            return {vis, streak:$('pr-streak').textContent, sessions:$('pr-sessions').textContent,
+                    filler:$('pr-filler-now').textContent, wpm:$('pr-wpm-now').textContent,
+                    mastery:$('pr-mastery').textContent, ask:$('pr-ask').textContent,
+                    fillerNote:$('pr-filler-note').textContent, skips:$('pr-skips').textContent,
+                    hasSvgOrMsg: $('pr-filler-chart').innerHTML.length > 20};
+        }""")
+        check("the progress screen renders from real stored data",
+              prog2["vis"] == "s-progress" and prog2["hasSvgOrMsg"] and len(prog2["fillerNote"]) > 10, prog2)
+
+        print("\n== help ==")
+        helpv = page.evaluate("""async () => {
+            const a=window.__artic; a.renderHelp();
+            const b=document.getElementById('help-body');
+            return {sections: b.querySelectorAll('h3').length, chars: b.textContent.length,
+                    vis:[...document.querySelectorAll('section')].filter(s=>!s.hidden).map(s=>s.id)[0]};
+        }""")
+        check("the in app how to covers every mode and the limits",
+              helpv["sections"] >= 10 and helpv["chars"] > 900, helpv)
+
+        print("\n== optional grading, off by default ==")
+        g = page.evaluate("""async () => {
+            const G = window.__artic.grading;
+            localStorage.removeItem('artic_claude_key'); localStorage.removeItem('artic_claude_on');
+            const offByDefault = G.gradingOn();
+            const noKey = G.hasKey();
+            const hintNoKey = G.keyHint();
+            // with nothing configured it must make no call at all
+            let called = false;
+            const realFetch = window.fetch;
+            window.fetch = (...args) => { called = true; return realFetch(...args); };
+            const r1 = await G.grade({transcript:'a fairly long transcript with plenty of words in it'});
+            // turning it on without a key must be impossible
+            G.setGradingOn(true);
+            const onWithoutKey = G.gradingOn();
+            // with a key saved, the hint must never print the key
+            G.setKey('sk-ant-test-DO-NOT-USE-1234abcd');
+            const hint = G.keyHint();
+            const leaks = hint.indexOf('sk-ant') >= 0;
+            const r2 = await G.grade({transcript:'short'});
+            G.setKey(''); G.setGradingOn(false);
+            window.fetch = realFetch;
+            return {offByDefault, noKey, hintNoKey, r1, onWithoutKey, hint, leaks, r2, called,
+                    stillOff: G.gradingOn()};
+        }""")
+        check("grading is off by default and there is no key", g["offByDefault"] is False and g["noKey"] is False)
+        check("with grading off it makes NO network call at all", g["called"] is False, g["r1"]["reason"])
+        check("it cannot be switched on without a key", g["onWithoutKey"] is False)
+        check("the key is never printed, only the last four characters",
+              g["leaks"] is False and "1234" not in g["hint"].replace("abcd", ""), g["hint"])
+        check("a too short transcript is refused before anything is sent",
+              g["r2"]["ok"] is False and "nothing was sent" in g["r2"]["reason"].lower(), g["r2"]["reason"])
+        check("clearing the key turns grading off", g["stillOff"] is False)
+
+        print("\n== the whole app still works with grading off and no key ==")
+        noKeyRun = page.evaluate("""async () => {
+            const $=id=>document.getElementById(id);
+            const w=ms=>new Promise(r=>setTimeout(r,ms));
+            const a=window.__artic;
+            localStorage.clear();
+            const vis=()=>[...document.querySelectorAll('section')].filter(s=>!s.hidden).map(s=>s.id)[0];
+            await a.db.setSetting('take_seconds', 2);
+            await a.db.clear('reps');
+            a.STEPS.clear.run(); await w(600);
+            $('cl-go').click();
+            for (let take=0; take<3; take++){
+                let guard=0;
+                while ($('clear-tally').hidden && guard++<60) await w(250);
+                if (!$('clear-tally').hidden){ $('tally-hit').click(); $('tally-done').click(); await w(300); }
+            }
+            let guard=0; while ($('clear-results').hidden && guard++<60) await w(250);
+            return {results: !$('clear-results').hidden,
+                    gradeButtonShown: !!$('cl-grade'),
+                    reps: (await a.db.all('reps')).filter(r=>r.mode==='clear').length};
+        }""")
+        check("a full Clear session completes with no key present",
+              noKeyRun["results"] and noKeyRun["reps"] == 3, noKeyRun)
+        check("the deeper read button is not even offered when grading is off",
+              noKeyRun["gradeButtonShown"] is False)
+
+        print("\n== dictation disclosure and switch ==")
+        disc = page.evaluate("""async () => {
+            const $=id=>document.getElementById(id);
+            const a=window.__artic;
+            await a.renderHelp();
+            const help = document.getElementById('help-body').textContent;
+            await a.db.setSetting('use_dictation', true);
+            const settingsText = document.getElementById('s-settings').textContent;
+            // the toggle must actually flip the setting
+            $('dictation-toggle').click();
+            await new Promise(r=>setTimeout(r,250));
+            const after = await a.db.setting('use_dictation', true);
+            $('dictation-toggle').click();
+            await new Promise(r=>setTimeout(r,250));
+            const back = await a.db.setting('use_dictation', true);
+            return {
+              helpDiscloses: /Apple or Google/.test(help),
+              settingsDiscloses: /Apple or Google/.test(settingsText),
+              toggleOff: after, toggleBackOn: back
+            };
+        }""")
+        check("the UI says plainly that dictation sends audio to Apple or Google",
+              disc["helpDiscloses"] and disc["settingsDiscloses"], disc)
+        check("dictation can be switched off, which stops anything leaving the phone",
+              disc["toggleOff"] is False and disc["toggleBackOn"] is True, disc)
+
         print("\n== clip retention ==")
         retention = page.evaluate("""async () => {
             const a=window.__artic;

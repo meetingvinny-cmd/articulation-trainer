@@ -9,6 +9,8 @@ import {
   recognitionSupported, listen, stopListening, speechSelfTest, analyseWaveform, isStandalone as inStandalone
 } from './audio.js';
 import { scoreTake, feedbackFor, fillerRate, coverage, wpm as calcWpm, paceVerdict } from './score.js';
+import { dailySeries, trend, sparkline, skipReport } from './progress.js';
+import * as grading from './grade.js';
 import {
   seedIfNeeded, dueWords, nextCardState, deckMastery, streakInfo,
   todaysDrill, coldestPerson, daysSince, connectStats, storageInfo, pruneClips
@@ -21,7 +23,7 @@ const $ = (id) => document.getElementById(id);
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-const SCREENS = ['install','home','shadow','paste','pick','frame','clear','words','connect','log','people','person','done','settings'];
+const SCREENS = ['install','home','shadow','paste','pick','frame','clear','progress','help','grade','words','connect','log','people','person','done','settings'];
 
 let session = null;      // the live session row
 let queue = [];          // remaining step names
@@ -790,7 +792,12 @@ function showClearResults() {
         ? 'Same filler rate across all three takes. The rule did not change anything yet, run it again tomorrow.'
         : 'Take three had ' + Math.abs(delta) + ' more fillers a minute than take one. That happens when the rule makes you self conscious. Slow down.';
 
-  $('clear-actions').innerHTML = '<button class="primary huge" id="cl-close">Done</button>';
+  const hasTranscript = cl.takes.some(t => t.transcript);
+  $('clear-actions').innerHTML =
+    (grading.gradingOn() && hasTranscript
+      ? '<div class="btnrow"><button id="cl-grade">Deeper read</button><button class="primary" id="cl-close">Done</button></div>'
+      : '<button class="primary huge" id="cl-close">Done</button>');
+  if ($('cl-grade')) $('cl-grade').onclick = () => { renderGrade(); gradeLastTake(); };
   $('cl-close').onclick = () => nextStep();
 }
 
@@ -1004,6 +1011,144 @@ async function savePerson() {
   renderPeople();
 }
 
+
+// ---------------- PROGRESS ----------------
+
+async function renderProgress() {
+  const [reps, sessions, people, st, mastery, cstats] = await Promise.all([
+    db.all('reps'), db.all('sessions'), db.all('people'), streakInfo(), deckMastery(), connectStats()
+  ]);
+  const cutoff = addDays(today(), -30);
+  const recentSessions = sessions.filter(s => s.completed && s.date >= cutoff);
+  const minutes = Math.round(sessions.reduce((n, s) => n + (s.duration_sec || 0), 0) / 60);
+
+  $('pr-streak').textContent = st.streak;
+  $('pr-sessions').textContent = recentSessions.length;
+  $('pr-minutes').textContent = minutes;
+
+  const fSeries = dailySeries(reps, 'filler_rate', 30, today());
+  const fT = trend(fSeries);
+  $('pr-filler-chart').innerHTML = sparkline(fSeries, { lowerIsBetter: true });
+  $('pr-filler-now').textContent = fT.latest == null ? 'no data' : fT.latest + ' a min';
+  $('pr-filler-note').textContent = fT.delta == null
+    ? 'Two mornings of data and the trend line starts.'
+    : fT.delta < -0.5 ? 'Down ' + Math.abs(fT.delta) + ' a minute across the month. That is real.'
+    : fT.delta > 0.5 ? 'Up ' + fT.delta + ' a minute across the month. Pause instead of filling.'
+    : 'Flat across the month. Push the pause rule harder in Clear.';
+
+  const wSeries = dailySeries(reps, 'wpm', 30, today());
+  const wT = trend(wSeries);
+  const low = await db.setting('target_wpm_low', 130);
+  const high = await db.setting('target_wpm_high', 160);
+  $('pr-wpm-chart').innerHTML = sparkline(wSeries, { band: [low, high] });
+  $('pr-wpm-now').textContent = wT.latest == null ? 'no data' : wT.latest + ' a min';
+  $('pr-wpm-note').textContent = wT.latest == null
+    ? 'The shaded band is the ' + low + ' to ' + high + ' target.'
+    : (wT.latest < low ? 'Under the band. You sound unsure when you drag.'
+      : wT.latest > high ? 'Over the band. Slow down, one idea per sentence.'
+      : 'Inside the ' + low + ' to ' + high + ' band. Hold it there.');
+
+  $('pr-mastery').textContent = mastery.pct + '%';
+  $('pr-mastery-bar').style.width = mastery.pct + '%';
+  $('pr-deck-note').textContent = mastery.mastered + ' of ' + mastery.total + ' cards in box 4 or 5.';
+
+  $('pr-ask').textContent = cstats.askRate == null ? 'no touches' : cstats.askRate + '% asks';
+  const rows = people
+    .map(p => ({ p, d: daysSince(p.last_touch_date) }))
+    .sort((a, b) => (b.d == null ? 9999 : b.d) - (a.d == null ? 9999 : a.d))
+    .slice(0, 8)
+    .map(({ p, d }) => '<li><div class="spread"><b>' + escapeHtml(p.name) + '</b><span class="small muted">' +
+      (d == null ? 'never' : d + ' days') + '</span></div></li>').join('');
+  $('pr-people').innerHTML = rows || '<li class="small muted">No people yet.</li>';
+  $('pr-ask-note').textContent = cstats.askRate == null
+    ? 'Log a touch and the ask rate appears.'
+    : cstats.askRate < 50
+      ? 'Under fifty percent. You are still only giving. Ask them for something.'
+      : 'Above fifty percent. That is what makes people feel part of your life.';
+
+  $('pr-skips').textContent = skipReport(sessions);
+  show('progress');
+}
+
+// ---------------- HELP ----------------
+
+const HELP = [
+  ['What this is', 'A short speaking drill for the morning. Five minutes in the car, five at the desk. It scores three things that actually make speech land: structure, filler, pace.'],
+  ['When to run it', 'Shadow and Words are the car modes, hands free, they read to you and advance themselves. Frame, Clear and Connect are the desk modes, 7:00 to 7:45 or 8:30 to 9:00. Weekends the same.'],
+  ['The one rule', 'Never miss twice. One missed day does not break the streak. After a miss the next morning is the two minute version, and the app shortens it for you.'],
+  ['Shadow', 'A voice reads one sentence, you repeat it, then you hear the model and yourself back to back. It ends with a cold read of the whole passage. You can paste your own text, a supplier email or a script, and shadow that instead.'],
+  ['Words', 'Ten cards. Say what it means out loud, tap to check, then say it in a sentence. A card you know but cannot use in a sentence goes back a box. That is on purpose. Knowing a word is not owning it.'],
+  ['Frame', 'A prompt, a structure, and thirty seconds to fill three beats. Then you talk for a minute with the beats on screen and tap each one as you hit it. The training is the thirty seconds, not the minute.'],
+  ['Clear', 'Three takes on one topic. Take one is you. Take two adds pause instead of um. Take three adds one idea per sentence. You see the difference in numbers.'],
+  ['Connect', 'One person card before a real conversation. What they said last time, one ask you can make, something to involve them in, and the thing they own. Then twenty seconds to log it after. The ask is the field that matters.'],
+  ['If dictation does not work', 'Then the app plays your take back and you tap a counter every time you hear yourself say um. That is a better trainer anyway, because you have to hear it.'],
+  ['What dictation does with your voice', 'Dictation is the phone built in speech to text. When it is on, your spoken audio goes to Apple or Google to be turned into words, exactly like dictating a text message. That is the one thing in this app that leaves the phone, and the one thing that needs a signal. Turn it off in Settings and nothing leaves at all. You then count your own fillers, which is the better drill.'],
+  ['Your data', 'Your recordings, your scores, your streak and your people never leave this phone. No account, no upload, no sync. The two exceptions are both things you switch on yourself: dictation, above, and the optional deeper read. Export a backup every few weeks from Settings, because Safari can clear a site it has not seen in a while.'],
+  ['The reminder', 'iOS cannot reliably schedule a notification from a web app with no server. The calendar block is the real reminder. The notification here is a nice to have, not the system.'],
+  ['Deeper read', 'Optional, off, and the app is complete without it. If you turn it on and paste your own key, the WORDS you said get sent to Claude for a three line critique. Your recordings never leave the phone.']
+];
+
+function renderHelp() {
+  $('help-body').innerHTML = HELP.map(([h, p]) =>
+    '<div><h3 style="margin:0 0 4px">' + escapeHtml(h) + '</h3><p style="margin:0">' + escapeHtml(p) + '</p></div>').join('');
+  show('help');
+}
+
+// ---------------- REMINDER ----------------
+// Honest about what a web app can and cannot do here.
+
+async function askForNotifications() {
+  if (!('Notification' in window)) {
+    $('notify-note').textContent = 'This browser has no notifications. Use the calendar block instead.';
+    return;
+  }
+  let perm = Notification.permission;
+  if (perm === 'default') {
+    try { perm = await Notification.requestPermission(); } catch (e) { perm = 'denied'; }
+  }
+  if (perm !== 'granted') {
+    $('notify-note').textContent = 'Notifications are off. The calendar block is the reminder that actually works.';
+    return;
+  }
+  await db.setSetting('notify', true);
+  try {
+    new Notification('Articulation Trainer', { body: 'Reminders on. Five minutes tomorrow morning.', icon: 'icons/icon-192.png' });
+  } catch (e) { /* some iOS builds need a service worker registration for this */ }
+  $('notify-note').textContent =
+    'On. Be straight about the limit: iOS cannot schedule a daily notification from a web app with no server, so this only fires while the app is open. The calendar block is the real reminder.';
+}
+
+// ---------------- GRADING ----------------
+
+function renderGrade() {
+  $('grade-toggle').textContent = grading.gradingOn() ? 'On' : 'Off';
+  $('grade-key').value = '';
+  $('grade-note').textContent = grading.keyHint();
+  $('grade-result').hidden = true;
+  show('grade');
+}
+
+async function gradeLastTake() {
+  const reps = (await db.all('reps'))
+    .filter(r => r.transcript && r.transcript.length > 20)
+    .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+  if (!reps.length) {
+    $('grade-note').textContent = 'No take with a transcript yet, so there is nothing to send.';
+    return;
+  }
+  $('grade-note').textContent = 'Sending the words only, no audio.';
+  const r = await grading.grade({ transcript: reps[0].transcript, prompt: reps[0].target_text });
+  if (r.ok) {
+    $('grade-text').textContent = r.text;
+    $('grade-result').hidden = false;
+    $('grade-note').textContent = grading.keyHint();
+    await db.put('reps', { ...reps[0], claude_note: r.text });
+  } else {
+    $('grade-result').hidden = true;
+    $('grade-note').textContent = r.reason;
+  }
+}
+
 // ---------------- settings ----------------
 
 async function renderSettings() {
@@ -1020,6 +1165,7 @@ async function renderSettings() {
     words.filter(w => w.deck === 'seed300').length + ' core words, ' +
     words.filter(w => w.deck === 'verbal_advantage').length + ' Verbal Advantage words.';
 
+  $('dictation-toggle').textContent = (await db.setting('use_dictation', true)) ? 'On' : 'Off';
   $('voice-note').textContent = speechSupported()
     ? 'Tap once, then the app can read to you. iOS will not release the voice list until you do.'
     : 'This browser has no built in voice. Pre recorded passages still work.';
@@ -1111,6 +1257,40 @@ function wire() {
   $('clear-quit').onclick = abortClear;
   $('clear-change').onclick = async () => { cl.topic = await randomPrompt(); $('clear-topic').textContent = cl.topic.text; };
   $('speech-test').onclick = runSpeechTest;
+  $('dictation-toggle').onclick = async () => {
+    const on = !(await db.setting('use_dictation', true));
+    await db.setSetting('use_dictation', on);
+    $('dictation-toggle').textContent = on ? 'On' : 'Off';
+    toast(on ? 'Dictation on. Your voice goes to Apple or Google to be turned into words.'
+             : 'Dictation off. Nothing leaves the phone. You count your own fillers.', 4000);
+  };
+  $('to-progress').onclick = renderProgress;
+  $('progress-back').onclick = async () => { await renderHome(); show('home'); };
+  $('done-progress').onclick = renderProgress;
+  $('to-help').onclick = renderHelp;
+  $('help-back').onclick = renderSettings;
+  $('notify-ask').onclick = askForNotifications;
+  $('to-grade').onclick = renderGrade;
+  $('grade-back').onclick = renderSettings;
+  $('grade-toggle').onclick = () => {
+    const next = !grading.gradingOn();
+    if (next && !grading.hasKey()) { toast('Paste a key first. With no key nothing can be sent.'); return; }
+    grading.setGradingOn(next);
+    $('grade-toggle').textContent = grading.gradingOn() ? 'On' : 'Off';
+  };
+  $('grade-save').onclick = () => {
+    const k = $('grade-key').value.trim();
+    if (!k) { toast('Nothing to save'); return; }
+    grading.setKey(k);
+    $('grade-key').value = '';
+    $('grade-note').textContent = grading.keyHint() + ' Turn it on to use it.';
+  };
+  $('grade-clear').onclick = () => {
+    grading.setKey('');
+    grading.setGradingOn(false);
+    $('grade-toggle').textContent = 'Off';
+    $('grade-note').textContent = grading.keyHint();
+  };
   $('shadow-change').onclick = openPick;
   $('shadow-paste').onclick = openPaste;
   $('shadow-hf').onclick = async () => {
@@ -1177,6 +1357,6 @@ function wire() {
 }
 
 // expose a few things for the harness tests, never used by the UI
-window.__artic = { db, show, seedIfNeeded, dueWords, nextCardState, streakInfo, storageInfo, STEPS, splitSentences, sh, fr, cl, pickPassage, feedbackFor, scoreTake };
+window.__artic = { db, show, seedIfNeeded, dueWords, nextCardState, streakInfo, storageInfo, STEPS, splitSentences, sh, fr, cl, pickPassage, feedbackFor, scoreTake, renderProgress, renderHelp, grading };
 
 boot();

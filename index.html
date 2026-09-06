@@ -38,7 +38,10 @@
   <section id="s-home" hidden>
     <div class="topbar">
       <div><h1>This Morning</h1><div class="muted small" id="home-date"></div></div>
-      <button id="to-settings">Settings</button>
+      <div class="row" style="gap:4px">
+        <button id="to-progress">Progress</button>
+        <button id="to-settings">Settings</button>
+      </div>
     </div>
 
     <div class="card center">
@@ -179,6 +182,72 @@
     <div class="footbar"><div class="footbar-inner" id="clear-actions"></div></div>
   </section>
 
+
+  <!-- ============ PROGRESS ============ -->
+  <section id="s-progress" hidden>
+    <div class="topbar"><h2 style="margin:0">Progress</h2><button id="progress-back">Back</button></div>
+
+    <div class="card">
+      <div class="row" style="gap:20px">
+        <div><div class="bignum" id="pr-streak">0</div><div class="small muted">day streak</div></div>
+        <div><div class="bignum" id="pr-sessions">0</div><div class="small muted">mornings in 30 days</div></div>
+        <div><div class="bignum" id="pr-minutes">0</div><div class="small muted">minutes total</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="spread"><h3 style="margin:0">Fillers a minute</h3><span class="pill" id="pr-filler-now">-</span></div>
+      <div id="pr-filler-chart"></div>
+      <div class="small muted" id="pr-filler-note"></div>
+    </div>
+
+    <div class="card">
+      <div class="spread"><h3 style="margin:0">Words a minute</h3><span class="pill" id="pr-wpm-now">-</span></div>
+      <div id="pr-wpm-chart"></div>
+      <div class="small muted" id="pr-wpm-note"></div>
+    </div>
+
+    <div class="card">
+      <div class="spread"><h3 style="margin:0">Deck</h3><span class="pill" id="pr-mastery">0%</span></div>
+      <div class="bar"><span id="pr-mastery-bar" style="width:0%"></span></div>
+      <div class="small muted" id="pr-deck-note"></div>
+    </div>
+
+    <div class="card">
+      <div class="spread"><h3 style="margin:0">People</h3><span class="pill" id="pr-ask">-</span></div>
+      <ul class="list" id="pr-people"></ul>
+      <div class="small muted" id="pr-ask-note"></div>
+    </div>
+
+    <div class="card">
+      <h3>Modes you skip</h3>
+      <div class="small muted" id="pr-skips">-</div>
+    </div>
+  </section>
+
+  <!-- ============ HELP ============ -->
+  <section id="s-help" hidden>
+    <div class="topbar"><h2 style="margin:0">How this works</h2><button id="help-back">Back</button></div>
+    <div class="card stack" id="help-body"></div>
+  </section>
+
+  <!-- ============ GRADING ============ -->
+  <section id="s-grade" hidden>
+    <div class="topbar"><h2 style="margin:0">Deeper read</h2><button id="grade-back">Back</button></div>
+    <div class="card stack">
+      <div class="small muted">Off by default. When it is on, the WORDS you said are sent to Claude with your own key. Your recordings are never sent. Nothing else in the app ever touches the network.</div>
+      <div class="row" style="justify-content:space-between">
+        <span>Deeper read</span><button class="small" id="grade-toggle" style="width:auto">Off</button>
+      </div>
+      <div><label>Your Anthropic key. It is kept on this phone only.</label>
+        <input id="grade-key" type="password" autocomplete="off" placeholder="paste it here"></div>
+      <button id="grade-save">Save the key</button>
+      <button class="danger ghost" id="grade-clear">Forget the key</button>
+      <div class="small muted" id="grade-note"></div>
+    </div>
+    <div class="card stack" id="grade-result" hidden><h3>What it said</h3><p id="grade-text" style="margin:0"></p></div>
+  </section>
+
   <!-- ============ WORDS ============ -->
   <section id="s-words" hidden>
     <div class="topbar">
@@ -285,6 +354,7 @@
       <div class="row" style="gap:20px" id="done-numbers"></div>
     </div>
     <div class="card"><p id="done-feedback" style="margin:0"></p></div>
+    <div class="card"><button class="ghost small" id="done-progress" style="width:100%">See the trend</button></div>
     <div class="footbar"><div class="footbar-inner"><button class="primary" id="done-close">Close</button></div></div>
   </section>
 
@@ -314,6 +384,10 @@
       <div class="small muted" id="voice-note">Tap once, then the app can read to you. iOS will not release the voice list until you do.</div>
       <button id="download-audio" class="ghost">Download all audio for offline</button>
       <div class="small muted" id="audio-note"></div>
+      <div class="row" style="justify-content:space-between">
+        <span>Dictation</span><button class="small" id="dictation-toggle" style="width:auto">On</button>
+      </div>
+      <div class="small muted">Dictation is the phone's own built in speech to text. When it is on, your spoken audio is sent to Apple or Google to be turned into words, the same as when you dictate a text message. It is the only thing in this app that ever leaves the phone, and it is the only thing that needs a signal. Turn it off and you count your own fillers by ear instead, which trains the ear better anyway.</div>
       <button id="speech-test" class="ghost">Test dictation on this phone</button>
       <div class="small muted" id="speech-note">Not tested yet. Run this once from the Home Screen icon and once in Safari.</div>
     </div>
@@ -324,7 +398,20 @@
     </div>
 
     <div class="card stack">
+      <h3>Reminder</h3>
+      <button id="notify-ask">Turn on a morning reminder</button>
+      <div class="small muted" id="notify-note"></div>
+    </div>
+
+    <div class="card stack">
+      <h3>Deeper read</h3>
+      <button id="to-grade">Optional Claude grading</button>
+      <div class="small muted">Off by default. The app is complete without it.</div>
+    </div>
+
+    <div class="card stack">
       <h3>App</h3>
+      <button id="to-help">How this works</button>
       <div class="small muted" id="about-note"></div>
       <button id="settings-reset" class="danger ghost">Erase everything on this device</button>
     </div>

@@ -8,7 +8,18 @@ Live: https://meetingvinny-cmd.github.io/articulation-trainer/
 ## What it is
 
 Five training modes, one 10 minute morning loop, everything scored and stored on the
-device. Nothing is uploaded. There is no API key in this repo and none in the browser.
+device. There is no API key in this repo and none in the browser by default.
+
+**What leaves the phone, stated plainly.** Recordings, scores, streak, words and people
+never leave the device, full stop. Two things can leave, and both are switches he
+controls:
+
+| Thing | Default | What goes where |
+|---|---|---|
+| Dictation | on, turn it off in Settings | spoken audio goes to Apple or Google to be turned into words, exactly like dictating a text message. This is the phone's own built in speech to text, and it is the only feature that needs a signal |
+| Deeper read | off, and inert without a pasted key | the WORDS of one take go to Anthropic with his own key. Never a recording |
+
+With dictation off and deeper read off, the app makes no outbound request of any kind.
 
 | Mode | What it trains | Where it runs |
 |---|---|---|
@@ -54,8 +65,10 @@ never touches this repo. Nothing personal is ever committed here.
     app.js                  screens, the session runner, the modes
     db.js                   the only file that touches IndexedDB
     logic.js                pure logic: seeding, Leitner, streak, storage
-    audio.js                speech synthesis, recording, playback   (M2)
-    score.js                transcript scoring: filler, wpm, coverage (M3)
+    audio.js                speech synthesis, recording, playback, dictation, waveform
+    score.js                scoring: filler, words per minute, coverage, feedback rules
+    progress.js             30 day series, trend, inline svg sparkline, skip report
+    grade.js                the OPTIONAL Claude read. Off by default, no key shipped
     sw.js                   offline cache
     manifest.webmanifest    Home Screen install
     data/words.json         the authored Core 300 deck
@@ -65,6 +78,9 @@ never touches this repo. Nothing personal is ever committed here.
     data/structures.json    the 6 thought structures
     audio/                  pre rendered mp3 of each passage (M2)
     scripts/                Mac side build tools, never shipped to the browser
+    scripts/render_passages.py   ElevenLabs pre render, key read from .env at run time
+    scripts/tests/e2e.py         67 check headless harness, fake mic, muted audio
+    HOW_TO.md               the one page how to
 
 ## Data model
 
@@ -116,6 +132,18 @@ and they are practice takes, not history. A future `/redevelop` skill reads this
 Read `sessions` for adherence and streak, `reps` for the trend in filler rate and
 words per minute, `words` for deck mastery, `touches` for ask rate.
 
+Fields a reader should know about:
+
+| Field | Meaning |
+|---|---|
+| `reps.transcript_source` | `asr` a machine heard it, `manual` he counted his own fillers, `none` audio only |
+| `reps.filler_hard` / `filler_soft` | hard fillers are always fillers, soft ones are real words doing filler work and are less certain |
+| `reps.silence_pct`, `pauses`, `longest_pause_sec` | from the decoded waveform, available with no network and no dictation |
+| `reps.beats_hit` / `beats_total` | Frame only, how much of the structure he actually hit |
+| `reps.take` | Clear only, 1, 2 or 3. Compare take 1 to take 3 for the within session delta |
+| `sessions.floor_session` | true means it was the two minute version after a missed day |
+| `sessions.modes_skipped` | which modes he dodged. The pattern here is the useful signal |
+
 ## Vocabulary decks
 
 **Core 300.** Authored for this app: 6 tiers of 50, every definition and every example
@@ -138,6 +166,8 @@ words still needing our own definition and example.
 - The ElevenLabs API key. It lives in the workspace `.env`, is used only by
   `scripts/render_passages.py` on the Mac, and never reaches the browser.
 - Any optional Claude API key. That is pasted by him into localStorage on the device.
+  With grading off, or with no key saved, `grade.js` makes no network call at all, and
+  the key is never printed anywhere except as its last four characters.
 - Any recording, transcript, person, score or streak.
 
 ## Note for the workspace
