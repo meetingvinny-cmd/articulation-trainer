@@ -97,7 +97,8 @@ export async function seedIfNeeded() {
 export async function dueWords(limit = 10) {
   const all = await db.all('words');
   const t = today();
-  const active = all.filter(w => w.active !== false);
+  // A card imported as a headword with no definition written yet is never studied.
+  const active = all.filter(w => w.active !== false && !w.needs_text && w.definition);
   const due = active.filter(w => !w.due_date || w.due_date <= t);
   // hardest first: lowest box, then most missed, then longest unseen
   due.sort((a, b) => (a.box - b.box) || (b.miss_count - a.miss_count) || String(a.last_seen).localeCompare(String(b.last_seen)));
@@ -130,7 +131,7 @@ export function nextCardState(card, knew, spoke) {
 }
 
 export async function deckMastery() {
-  const all = (await db.all('words')).filter(w => w.active !== false);
+  const all = (await db.all('words')).filter(w => w.active !== false && !w.needs_text && w.definition);
   if (!all.length) return { total: 0, mastered: 0, pct: 0 };
   const mastered = all.filter(w => (w.box || 1) >= MASTERY_BOX).length;
   return { total: all.length, mastered, pct: Math.round(mastered * 100 / all.length) };

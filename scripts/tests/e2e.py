@@ -501,6 +501,21 @@ def main():
         check("the deeper read button is not even offered when grading is off",
               noKeyRun["gradeButtonShown"] is False)
 
+        print("\n== imported headwords with no text are never studied ==")
+        imp = page.evaluate("""async () => {
+            const a=window.__artic;
+            await a.db.put('words', {id:'verbal_advantage::placeholderword', deck:'verbal_advantage',
+                word:'placeholderword', definition:'', example_sentence:'', box:1,
+                due_date:'2000-01-01', seen_count:0, correct_count:0, miss_count:0,
+                active:true, needs_text:true});
+            const due = await a.dueWords(999);
+            const inDeck = due.some(w=>w.word==='placeholderword');
+            await a.db.del('words','verbal_advantage::placeholderword');
+            return {inDeck};
+        }""")
+        check("a headword imported with no definition never reaches a study session",
+              imp["inDeck"] is False, imp)
+
         print("\n== dictation disclosure and switch ==")
         disc = page.evaluate("""async () => {
             const $=id=>document.getElementById(id);
