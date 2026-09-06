@@ -278,3 +278,130 @@ export async function letSleep() {
   document.removeEventListener('visibilitychange', reacquire);
   if (lock) { try { await lock.release(); } catch (e) { /* ignore */ } lock = null; }
 }
+
+// ---------- speech recognition ----------
+// The transcript is a BONUS, never a requirement. On iOS this is prefixed, it
+// needs a fresh gesture per utterance, it sends audio to Apple so it needs a
+// network, and it has a history of not working at all inside a Home Screen
+// installed web app. Every caller must handle a null transcript.
+
+export function recognitionSupported() {
+  return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+
+export function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+// Listens for up to maxMs and resolves with what it heard, or null.
+// It never rejects and it never runs past its ceiling.
+export function listen({ maxMs = 65000, onPartial } = {}) {
+  return new Promise((resolve) => {
+    const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!Rec) return resolve({ ok: false, transcript: null, reason: 'not supported' });
+    if (!navigator.onLine) return resolve({ ok: false, transcript: null, reason: 'no network, dictation needs one' });
+
+    let r;
+    try { r = new Rec(); } catch (e) { return resolve({ ok: false, transcript: null, reason: String(e && e.message || e) }); }
+    r.lang = 'en-US';
+    r.continuous = true;
+    r.interimResults = true;
+    r.maxAlternatives = 1;
+
+    let finalText = '';
+    let lastErr = null;
+    let done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      clearTimeout(guard);
+      try { r.stop(); } catch (e) { /* ignore */ }
+      const text = finalText.trim();
+      resolve({ ok: !!text, transcript: text || null, reason: text ? null : (lastErr || 'nothing recognised') });
+    };
+
+    r.onresult = (ev) => {
+      let interim = '';
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        const chunk = ev.results[i][0].transcript;
+        if (ev.results[i].isFinal) finalText += chunk + ' ';
+        else interim += chunk;
+      }
+      if (onPartial) onPartial((finalText + interim).trim());
+    };
+    r.onerror = (ev) => { lastErr = ev && ev.error ? String(ev.error) : 'error'; if (lastErr !== 'no-speech') finish(); };
+    r.onend = () => finish();
+
+    const guard = setTimeout(finish, maxMs);
+    try { r.start(); } catch (e) { lastErr = String(e && e.message || e); finish(); }
+
+    // the caller can cut it short
+    listen._stop = finish;
+  });
+}
+
+export function stopListening() { if (listen._stop) { try { listen._stop(); } catch (e) { /* ignore */ } } }
+
+// The written answer to the one real unknown in the design: does dictation work
+// inside an installed Home Screen app, or only in a Safari tab? This runs the
+// same code in whatever mode it is in and records what actually happened.
+export async function speechSelfTest() {
+  const mode = isStandalone() ? 'standalone' : 'browser tab';
+  const base = {
+    mode,
+    supported: recognitionSupported(),
+    online: navigator.onLine,
+    ua: navigator.userAgent,
+    at: new Date().toISOString()
+  };
+  if (!base.supported) return { ...base, ok: false, transcript: null, reason: 'this browser has no speech recognition' };
+  const r = await listen({ maxMs: 12000 });
+  return { ...base, ok: r.ok, transcript: r.transcript, reason: r.reason };
+}
+
+// ---------- silence from the waveform ----------
+// This is the no-transcript path. It needs no network, no dictation and no
+// permission beyond the recording he already made.
+
+export async function analyseWaveform(blob) {
+  if (!blob) return null;
+  let ctx = null;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    ctx = new AC();
+    const buf = await ctx.decodeAudioData(await blob.arrayBuffer());
+    const data = buf.getChannelData(0);
+    const rate = buf.sampleRate;
+    const win = Math.max(1, Math.floor(rate * 0.05));   // 50 ms windows
+    const rms = [];
+    for (let i = 0; i < data.length; i += win) {
+      let sum = 0;
+      const end = Math.min(i + win, data.length);
+      for (let j = i; j < end; j++) sum += data[j] * data[j];
+      rms.push(Math.sqrt(sum / Math.max(1, end - i)));
+    }
+    if (!rms.length) return null;
+    const peak = Math.max(...rms);
+    // A window under 8 percent of the loudest window counts as silence. Relative,
+    // so it works the same in a quiet room and in a moving car.
+    const floor = Math.max(peak * 0.08, 0.004);
+    let quiet = 0, longestQuiet = 0, run = 0, gaps = 0, inGap = false;
+    for (const v of rms) {
+      if (v < floor) {
+        quiet++; run++;
+        if (run > longestQuiet) longestQuiet = run;
+        if (!inGap && run >= 8) { gaps++; inGap = true; }   // a real pause is 400 ms or more
+      } else { run = 0; inGap = false; }
+    }
+    return {
+      duration_sec: Math.round(buf.duration * 10) / 10,
+      silence_pct: Math.round(quiet * 100 / rms.length),
+      longest_pause_sec: Math.round(longestQuiet * 0.05 * 10) / 10,
+      pauses: gaps
+    };
+  } catch (e) {
+    return null;
+  } finally {
+    if (ctx && ctx.close) { try { await ctx.close(); } catch (e) { /* ignore */ } }
+  }
+}

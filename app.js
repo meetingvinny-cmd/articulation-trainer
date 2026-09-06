@@ -1,12 +1,14 @@
-// app.js - screens, the morning session runner, and the M1 modes (Words, Connect).
+// app.js - screens, the morning session runner, and all five modes.
 // No network calls. No API keys. Everything stays in IndexedDB on this device.
 
 import { db, uuid, today, addDays, daysBetween } from './db.js';
 import {
   splitSentences, enableVoice, speak, stopSpeaking, speechSupported,
   playUrl, playBlob, stopPlayback, sayPassage, Recorder, recordingSupported,
-  micPermission, releaseMic, keepAwake, letSleep
+  micPermission, releaseMic, keepAwake, letSleep,
+  recognitionSupported, listen, stopListening, speechSelfTest, analyseWaveform, isStandalone as inStandalone
 } from './audio.js';
+import { scoreTake, feedbackFor, fillerRate, coverage, wpm as calcWpm, paceVerdict } from './score.js';
 import {
   seedIfNeeded, dueWords, nextCardState, deckMastery, streakInfo,
   todaysDrill, coldestPerson, daysSince, connectStats, storageInfo, pruneClips
@@ -19,7 +21,7 @@ const $ = (id) => document.getElementById(id);
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-const SCREENS = ['install','home','shadow','paste','pick','words','connect','log','people','person','done','settings'];
+const SCREENS = ['install','home','shadow','paste','pick','frame','clear','words','connect','log','people','person','done','settings'];
 
 let session = null;      // the live session row
 let queue = [];          // remaining step names
@@ -200,14 +202,39 @@ async function endSession() {
   show('done');
 }
 
-// M1 keeps this small and rules based. M4 grows the table to ten or more rules.
+// The one line of feedback comes from the visible rules table in score.js.
+// It is never a network call and never a model.
 async function feedbackLine(r, mastery) {
-  if (r.floor) return 'Short session, streak intact. Tomorrow is the full one.';
-  if (r.cards_total && r.cards_correct / r.cards_total < 0.5) return 'You missed more than half. Those cards come back tomorrow, that is the point.';
-  if (r.spoken_missed) return 'You knew ' + r.spoken_missed + ' of them but could not build a sentence. Those went back a box. Knowing is not owning.';
-  if (r.ask_made === false) return 'You logged a touch with no ask. Asking is what makes someone part of your life, giving is not.';
-  if (mastery.pct >= 50) return 'Half the deck is yours now. Keep going.';
-  return 'Done. Same time tomorrow.';
+  const prev = await previousFillerRate();
+  return feedbackFor({ ...r, mastery_pct: mastery.pct, prev_filler_rate: prev });
+}
+
+async function previousFillerRate() {
+  const reps = await db.all('reps');
+  const rated = reps
+    .filter(x => x.filler_rate != null && x.session_id !== (session && session.id))
+    .sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+  return rated.length ? rated[0].filler_rate : null;
+}
+
+// The written answer to the standalone versus tab question, recorded from a real
+// run on his phone rather than assumed. Both results are kept so the two modes
+// can be compared.
+async function runSpeechTest() {
+  $('speech-note').textContent = 'Listening for up to 12 seconds. Say: this is a test of the dictation.';
+  const r = await speechSelfTest();
+  const all = await db.setting('speech_tests', {});
+  all[r.mode] = r;
+  await db.setSetting('speech_tests', all);
+  const line = r.ok
+    ? 'Works in ' + r.mode + '. It heard: ' + r.transcript
+    : 'Did NOT work in ' + r.mode + '. Reason: ' + (r.reason || 'unknown') + '. Scores fall back to counting fillers yourself, which still works.';
+  const other = r.mode === 'standalone' ? all['browser tab'] : all['standalone'];
+  $('speech-note').textContent = line + (other ? ' Previously in ' + other.mode + ': ' + (other.ok ? 'worked' : 'did not work') + '.' : ' Now run it in the other mode too.');
+  if (!r.ok && r.mode === 'standalone') {
+    await db.setSetting('use_dictation', false);
+    toast('Dictation off. You count your own fillers, which trains the ear better anyway.', 5000);
+  }
 }
 
 
@@ -403,12 +430,29 @@ function waitOrTap(ms) {
   return new Promise((resolve) => {
     let done = false;
     const fin = () => { if (done) return; done = true; tapResolver = null; document.removeEventListener('click', onTap, true); resolve(); };
-    const onTap = (e) => { if (e.target && e.target.id === 'sh-stop') return; e.preventDefault(); e.stopPropagation(); fin(); };
+    const onTap = (e) => {
+      // Stop is a real button and must keep working. Everything else just means
+      // "I am done, move on", and is swallowed so it cannot also press something.
+      if (e.target && e.target.closest && e.target.closest('#sh-stop')) return;
+      e.preventDefault(); e.stopPropagation(); fin();
+    };
     tapResolver = fin;
     document.addEventListener('click', onTap, true);
     setTimeout(fin, ms);
   });
 }
+// Ends when the clock runs out or when one specific button is pressed. Every
+// other tap on the screen is left alone, so beat taps and filler taps still work.
+function waitTimerOrButton(ms, buttonId) {
+  return new Promise((resolve) => {
+    let done = false;
+    const fin = () => { if (done) return; done = true; clearTimeout(t); resolve(); };
+    const t = setTimeout(fin, ms);
+    const btn = $(buttonId);
+    if (btn) btn.onclick = (e) => { e.stopPropagation(); fin(); };
+  });
+}
+
 function waitForTap(label) {
   return new Promise((resolve) => {
     $('shadow-actions').innerHTML =
@@ -451,6 +495,309 @@ async function openPick() {
     el.onclick = async () => { sh.text = await db.get('texts', el.dataset.id); show('shadow'); renderShadowIntro(); };
   }
   show('pick');
+}
+
+
+// ---------------- shared take runner ----------------
+// One place that records a take, tries for a transcript, and always produces a
+// score row. Every branch of it ends in a score, including the branch where
+// there is no microphone, no dictation and no network.
+
+async function runTake({ maxMs, target = null, onTick, onPartial, doneId = null }) {
+  const r = new Recorder();
+  let recording = false;
+  try { await r.start(); recording = true; } catch (e) { /* keep going without audio */ }
+
+  const wantAsr = recognitionSupported() && navigator.onLine && (await db.setting('use_dictation', true));
+  const asrPromise = wantAsr ? listen({ maxMs: maxMs + 2000, onPartial }) : Promise.resolve({ ok: false, transcript: null, reason: 'off or unavailable' });
+
+  const startedAt = Date.now();
+  let ticker = null;
+  if (onTick) ticker = setInterval(() => onTick(Math.round((Date.now() - startedAt) / 1000)), 250);
+
+  // Frame and Clear must NOT end on any old tap: he taps beats mid sentence and
+  // he taps the filler counter. Only the explicit Done button, or the clock.
+  if (doneId) await waitTimerOrButton(maxMs, doneId);
+  else await waitOrTap(maxMs);
+  if (ticker) clearInterval(ticker);
+  stopListening();
+
+  const rec = recording ? await r.stop() : null;
+  const asr = await asrPromise;
+  const wall = (Date.now() - startedAt) / 1000;
+  const wave = rec && rec.blob ? await analyseWaveform(rec.blob) : null;
+  const duration = (wave && wave.duration_sec) || (rec && rec.duration_sec) || wall;
+
+  const s = scoreTake({ transcript: asr.transcript, durationSec: duration, target });
+  s.transcript_source = asr.transcript ? 'asr' : 'none';
+  s.silence_pct = wave ? wave.silence_pct : null;
+  s.pauses = wave ? wave.pauses : null;
+  s.longest_pause_sec = wave ? wave.longest_pause_sec : null;
+  s.asr_reason = asr.reason || null;
+  return { score: s, rec };
+}
+
+// ---------------- FRAME ----------------
+
+STEPS.frame = {
+  label: 'Frame',
+  note: 'Three beats in thirty seconds, then say it',
+  run: runFrame
+};
+
+const fr = { prompt: null, structure: null, beats: [], hit: [], round: 0, timer: null };
+
+// Timings live in settings so the test harness can run a real session in seconds
+// and so a length can be changed later without touching code.
+async function timing(key, fallback) { return await db.setting(key, fallback); }
+
+async function runFrame() {
+  fr.round = 0;
+  show('frame');
+  await nextFrameRound();
+}
+
+async function nextFrameRound() {
+  fr.round++;
+  const prompts = await db.all('prompts');
+  const structures = await db.setting('structures', []);
+  fr.prompt = prompts[Math.floor(Math.random() * prompts.length)];
+  fr.structure = structures.find(s => s.id === fr.prompt.structure_hint) || structures[0];
+  fr.beats = fr.structure.beats.map(() => '');
+  fr.hit = fr.structure.beats.map(() => false);
+
+  $('frame-sub').textContent = 'Round ' + fr.round + ' of ' + (await timing('frame_rounds', 2));
+  $('frame-prompt').textContent = fr.prompt.text;
+  $('frame-structure').textContent = fr.structure.name;
+  $('frame-speak-card').hidden = true;
+  $('frame-beats-card').hidden = false;
+  $('frame-beats').innerHTML = fr.structure.beats.map((b, i) =>
+    '<div><label>' + escapeHtml(b) + '</label><input id="fb' + i + '" autocomplete="off" placeholder="a word or two"></div>').join('');
+  $('frame-actions').innerHTML = '<button class="primary huge" id="fr-speak">Ready, say it</button>';
+  $('fr-speak').onclick = frameSpeak;
+
+  let left = await timing('frame_beats_seconds', 30);
+  $('frame-timer').textContent = left;
+  clearInterval(fr.timer);
+  fr.timer = setInterval(() => {
+    left--;
+    $('frame-timer').textContent = Math.max(0, left);
+    if (left <= 0) { clearInterval(fr.timer); if (!$('s-frame').hidden && $('frame-speak-card').hidden) frameSpeak(); }
+  }, 1000);
+}
+
+let firstWordAt = null;
+
+async function frameSpeak() {
+  clearInterval(fr.timer);
+  firstWordAt = null;
+  for (let i = 0; i < fr.beats.length; i++) {
+    const el = $('fb' + i);
+    fr.beats[i] = el ? el.value.trim() : '';
+  }
+  await enableVoice();
+  await keepAwake();
+
+  $('frame-beats-card').hidden = true;
+  $('frame-speak-card').hidden = false;
+  $('frame-beat-taps').innerHTML = fr.structure.beats.map((b, i) =>
+    '<button id="ft' + i + '" class="ghost">' + escapeHtml(b) + (fr.beats[i] ? ': ' + escapeHtml(fr.beats[i]) : '') + '</button>').join('');
+  for (let i = 0; i < fr.structure.beats.length; i++) {
+    $('ft' + i).onclick = (e) => {
+      e.stopPropagation();
+      fr.hit[i] = true;
+      $('ft' + i).classList.add('primary');
+      if (firstWordAt == null) firstWordAt = Date.now();
+    };
+  }
+  $('frame-actions').innerHTML = '<button class="primary huge" id="fr-done">Done</button>';
+
+  const startedAt = Date.now();
+  const { score, rec } = await runTake({
+    maxMs: (await timing('frame_speak_seconds', 60)) * 1000,
+    doneId: 'fr-done',
+    onTick: (s) => { $('frame-clock').textContent = s + 's'; },
+    onPartial: (t) => { if (t && firstWordAt == null) firstWordAt = Date.now(); }
+  });
+
+  const beatsHit = fr.hit.filter(Boolean).length;
+  const repId = uuid();
+  const clipId = rec ? await saveClip(repId, rec) : null;
+  await db.put('reps', {
+    id: repId, session_id: session.id, mode: 'frame', created_at: new Date().toISOString(),
+    prompt_id: fr.prompt.id, structure_id: fr.structure.id, target_text: fr.prompt.text,
+    beats_text: fr.beats.join(' | '), beats_hit: beatsHit, beats_total: fr.structure.beats.length,
+    time_to_first_word_ms: firstWordAt ? (firstWordAt - startedAt) : null,
+    clip_id: clipId, ...score
+  });
+
+  results.beats_hit = beatsHit;
+  results.beats_total = fr.structure.beats.length;
+  results.time_to_first_word_ms = firstWordAt ? (firstWordAt - startedAt) : null;
+  if (score.wpm) results.wpm = score.wpm;
+  if (score.filler_rate != null) results.filler_rate = score.filler_rate;
+
+  letSleep();
+  if (fr.round < (await timing('frame_rounds', 2))) return nextFrameRound();
+  releaseMic();
+  nextStep();
+}
+
+function abortFrame() {
+  clearInterval(fr.timer);
+  stopListening(); letSleep(); releaseMic();
+  nextStep('frame');
+}
+
+// ---------------- CLEAR ----------------
+
+STEPS.clear = {
+  label: 'Clear',
+  note: 'Three sixty second takes, one rule added each time',
+  run: runClear
+};
+
+const TAKE_RULES = [
+  { label: 'Take 1, baseline', rule: 'No rules. Just talk for sixty seconds.' },
+  { label: 'Take 2', rule: 'Pause instead of saying um. Silence is allowed.' },
+  { label: 'Take 3', rule: 'One idea per sentence. Full stop before the next one.' }
+];
+
+const cl = { topic: null, takes: [], n: 0, tally: 0 };
+
+async function runClear() {
+  cl.takes = []; cl.n = 0;
+  cl.topic = await randomPrompt();
+  show('clear');
+  renderClearSetup();
+}
+
+async function randomPrompt() {
+  const prompts = await db.all('prompts');
+  return prompts[Math.floor(Math.random() * prompts.length)];
+}
+
+function renderClearSetup() {
+  $('clear-setup').hidden = false;
+  $('clear-take').hidden = true;
+  $('clear-tally').hidden = true;
+  $('clear-results').hidden = true;
+  $('clear-sub').textContent = 'Three takes, about four minutes';
+  $('clear-topic').textContent = cl.topic.text;
+  $('clear-actions').innerHTML = '<button class="primary huge" id="cl-go">Start take 1</button>';
+  $('cl-go').onclick = startTake;
+}
+
+async function startTake() {
+  await enableVoice();
+  await keepAwake();
+  const t = TAKE_RULES[cl.n];
+  $('clear-setup').hidden = true;
+  $('clear-results').hidden = true;
+  $('clear-take').hidden = false;
+  $('clear-takelabel').textContent = t.label;
+  $('clear-rule').textContent = t.rule;
+  $('clear-clock').textContent = '0s';
+  $('clear-live').textContent = '';
+  $('clear-actions').innerHTML = '<button class="primary huge" id="cl-done">Done</button>';
+  $('clear-sub').textContent = 'Take ' + (cl.n + 1) + ' of 3';
+
+  const { score, rec } = await runTake({
+    maxMs: (await timing('take_seconds', 60)) * 1000,
+    doneId: 'cl-done',
+    onTick: (s) => { $('clear-clock').textContent = s + 's'; },
+    onPartial: (txt) => { $('clear-live').textContent = txt.slice(-90); }
+  });
+
+  const repId = uuid();
+  const clipId = rec ? await saveClip(repId, rec) : null;
+  const row = { take: cl.n + 1, repId, clipId, blob: rec ? rec.blob : null, ...score };
+
+  // No transcript means no machine filler count. The manual tally is the
+  // fallback, and hearing yourself say them is arguably the better trainer.
+  if (score.transcript == null) {
+    letSleep();
+    await manualTally(row);
+  }
+  cl.takes.push(row);
+
+  await db.put('reps', {
+    id: repId, session_id: session.id, mode: 'clear', created_at: new Date().toISOString(),
+    prompt_id: cl.topic.id, target_text: cl.topic.text, take: row.take,
+    clip_id: clipId, ...score,
+    filler_count: row.filler_count, filler_rate: row.filler_rate,
+    transcript_source: row.transcript_source
+  });
+
+  cl.n++;
+  letSleep();
+  if (cl.n < 3) return startTake();
+  releaseMic();
+  showClearResults();
+}
+
+function manualTally(row) {
+  return new Promise((resolve) => {
+    cl.tally = 0;
+    $('clear-take').hidden = true;
+    $('clear-tally').hidden = false;
+    $('tally-count').textContent = '0';
+    $('clear-actions').innerHTML = '<button class="primary huge" id="tally-done">Done counting</button>';
+    if (row.blob) playBlob(row.blob, row.duration_sec);
+    $('tally-hit').onclick = (e) => { e.stopPropagation(); cl.tally++; $('tally-count').textContent = cl.tally; };
+    $('tally-undo').onclick = (e) => { e.stopPropagation(); cl.tally = Math.max(0, cl.tally - 1); $('tally-count').textContent = cl.tally; };
+    $('tally-done').onclick = () => {
+      stopPlayback();
+      row.filler_count = cl.tally;
+      row.filler_rate = fillerRate(cl.tally, row.duration_sec);
+      row.transcript_source = 'manual';
+      $('clear-tally').hidden = true;
+      resolve();
+    };
+  });
+}
+
+function showClearResults() {
+  $('clear-take').hidden = true;
+  $('clear-tally').hidden = true;
+  $('clear-results').hidden = false;
+  $('clear-sub').textContent = 'Three takes done';
+
+  const head = '<tr><th style="text-align:left">Take</th><th>Fillers a min</th><th>Words a min</th><th>Silence</th><th>How</th></tr>';
+  const rows = cl.takes.map(t =>
+    '<tr><td>' + t.take + '</td><td class="center">' + (t.filler_rate == null ? '-' : t.filler_rate) +
+    '</td><td class="center">' + (t.wpm == null ? '-' : t.wpm) +
+    '</td><td class="center">' + (t.silence_pct == null ? '-' : t.silence_pct + '%') +
+    '</td><td class="center small muted">' + (t.transcript_source === 'asr' ? 'heard' : t.transcript_source === 'manual' ? 'you counted' : 'audio only') +
+    '</td></tr>').join('');
+  $('clear-table').innerHTML = head + rows;
+
+  const first = cl.takes[0], last = cl.takes[cl.takes.length - 1];
+  let delta = null;
+  if (first && last && first.filler_rate != null && last.filler_rate != null) {
+    delta = Math.round((first.filler_rate - last.filler_rate) * 10) / 10;
+  }
+  results.take_delta = delta;
+  if (last) {
+    if (last.wpm) results.wpm = last.wpm;
+    if (last.filler_rate != null) results.filler_rate = last.filler_rate;
+  }
+  $('clear-verdict').textContent = delta == null
+    ? 'No filler numbers this time, so the takes are stored on pace and silence only.'
+    : delta > 0
+      ? 'Take three had ' + delta + ' fewer fillers a minute than take one. That is the drill working.'
+      : delta === 0
+        ? 'Same filler rate across all three takes. The rule did not change anything yet, run it again tomorrow.'
+        : 'Take three had ' + Math.abs(delta) + ' more fillers a minute than take one. That happens when the rule makes you self conscious. Slow down.';
+
+  $('clear-actions').innerHTML = '<button class="primary huge" id="cl-close">Done</button>';
+  $('cl-close').onclick = () => nextStep();
+}
+
+function abortClear() {
+  stopListening(); stopPlayback(); letSleep(); releaseMic();
+  if (cl.takes.length) return showClearResults();
+  nextStep('clear');
 }
 
 // ---------------- WORDS ----------------
@@ -760,6 +1107,10 @@ function wire() {
   };
 
   $('shadow-quit').onclick = abortShadow;
+  $('frame-quit').onclick = abortFrame;
+  $('clear-quit').onclick = abortClear;
+  $('clear-change').onclick = async () => { cl.topic = await randomPrompt(); $('clear-topic').textContent = cl.topic.text; };
+  $('speech-test').onclick = runSpeechTest;
   $('shadow-change').onclick = openPick;
   $('shadow-paste').onclick = openPaste;
   $('shadow-hf').onclick = async () => {
@@ -826,6 +1177,6 @@ function wire() {
 }
 
 // expose a few things for the harness tests, never used by the UI
-window.__artic = { db, show, seedIfNeeded, dueWords, nextCardState, streakInfo, storageInfo, STEPS, splitSentences, sh, pickPassage };
+window.__artic = { db, show, seedIfNeeded, dueWords, nextCardState, streakInfo, storageInfo, STEPS, splitSentences, sh, fr, cl, pickPassage, feedbackFor, scoreTake };
 
 boot();

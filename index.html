@@ -117,6 +117,68 @@
     <ul class="list card" id="pick-list"></ul>
   </section>
 
+
+  <!-- ============ FRAME ============ -->
+  <section id="s-frame" hidden>
+    <div class="topbar">
+      <div><h2 style="margin:0">Frame</h2><div class="muted small" id="frame-sub">-</div></div>
+      <button id="frame-quit">Skip</button>
+    </div>
+
+    <div class="card">
+      <h3>The prompt</h3>
+      <p id="frame-prompt" style="font-size:19px;margin:0">-</p>
+    </div>
+
+    <div class="card" id="frame-beats-card">
+      <div class="spread"><h3 style="margin:0" id="frame-structure">-</h3><span class="pill" id="frame-timer">30</span></div>
+      <div class="stack" id="frame-beats"></div>
+    </div>
+
+    <div class="card" id="frame-speak-card" hidden>
+      <div class="spread"><h3 style="margin:0">Say it</h3><span class="pill" id="frame-clock">0s</span></div>
+      <div class="small muted">Tap each beat as you hit it.</div>
+      <div class="stack" id="frame-beat-taps"></div>
+    </div>
+
+    <div class="footbar"><div class="footbar-inner" id="frame-actions"></div></div>
+  </section>
+
+  <!-- ============ CLEAR ============ -->
+  <section id="s-clear" hidden>
+    <div class="topbar">
+      <div><h2 style="margin:0">Clear</h2><div class="muted small" id="clear-sub">-</div></div>
+      <button id="clear-quit">Skip</button>
+    </div>
+
+    <div id="clear-setup" class="card stack">
+      <h3>Your topic</h3>
+      <p id="clear-topic" style="font-size:18px;margin:0">-</p>
+      <button class="ghost small" id="clear-change" style="width:100%">Different topic</button>
+    </div>
+
+    <div id="clear-take" hidden class="card grow center" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="muted small" id="clear-takelabel">-</div>
+      <div class="def" id="clear-rule" style="font-size:21px;margin:14px 0">-</div>
+      <div class="bignum" id="clear-clock">0s</div>
+      <div class="small muted" id="clear-live"></div>
+    </div>
+
+    <div id="clear-tally" hidden class="card center stack">
+      <h3>Listen back and tap every filler you hear</h3>
+      <div class="bignum" id="tally-count">0</div>
+      <button class="primary huge" id="tally-hit">Heard one</button>
+      <button class="ghost" id="tally-undo">Undo</button>
+    </div>
+
+    <div id="clear-results" hidden>
+      <div class="card"><h3>Your three takes</h3><div class="scrollx"><table id="clear-table" style="width:100%;border-collapse:collapse;font-size:15px"></table></div></div>
+      <div class="card"><p id="clear-verdict" style="margin:0"></p></div>
+    </div>
+
+    <div class="footbar"><div class="footbar-inner" id="clear-actions"></div></div>
+  </section>
+
   <!-- ============ WORDS ============ -->
   <section id="s-words" hidden>
     <div class="topbar">
@@ -252,6 +314,8 @@
       <div class="small muted" id="voice-note">Tap once, then the app can read to you. iOS will not release the voice list until you do.</div>
       <button id="download-audio" class="ghost">Download all audio for offline</button>
       <div class="small muted" id="audio-note"></div>
+      <button id="speech-test" class="ghost">Test dictation on this phone</button>
+      <div class="small muted" id="speech-note">Not tested yet. Run this once from the Home Screen icon and once in Safari.</div>
     </div>
 
     <div class="card stack">

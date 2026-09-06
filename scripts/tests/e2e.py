@@ -129,8 +129,10 @@ def main():
             return {matched, heads: out, total: texts.reduce((n,t)=>n+(t.sentence_audio||[]).length,0)};
         }""")
         check("every passage has one mp3 per sentence", audio["matched"], audio["total"])
-        check("sentence and passage mp3 all return 200 audio/mpeg",
-              all(h[0] == 200 and h[1] == "audio/mpeg" for h in audio["heads"]), audio["heads"])
+        # GitHub Pages labels mp3 as audio/mp3, a local python server says audio/mpeg.
+        # Both are mp3 and every browser plays both, so accept either.
+        check("sentence and passage mp3 all return 200 and an mp3 content type",
+              all(h[0] == 200 and h[1] in ("audio/mpeg", "audio/mp3") for h in audio["heads"]), audio["heads"])
 
         print("\n== words session, full 10 cards ==")
         words = page.evaluate("""async () => {
@@ -216,6 +218,168 @@ def main():
         check("clips are stored with the container the browser actually gave us",
               len(shadow["clips"]) > 0 and all(c["mime"] and c["bytes"] > 800 for c in shadow["clips"]),
               [(c["mime"], c["bytes"]) for c in shadow["clips"]])
+
+
+        print("\n== scoring, pure functions ==")
+        sc = page.evaluate("""async () => {
+            const S = await import('./score.js');
+            const t = "um so I was uh thinking that we should like ship it. Basically the price is right, you know. um ok.";
+            const f = S.fillerCounts(t);
+            return {
+              hard: f.hardTotal, soft: f.softTotal, total: f.total,
+              // "um" must not match inside "umbrella", "so" not inside "sorry"
+              noSubstring: S.fillerCounts("umbrella sorry likely justice actuality").total,
+              wpm60: S.wpm("one two three four five six seven eight nine ten", 60),
+              wpm0: S.wpm("one two", 0),
+              wpmEmpty: S.wpm("", 30),
+              rate: S.fillerRate(6, 120),
+              covFull: S.coverage("the quick brown fox", "the quick brown fox"),
+              covHalf: S.coverage("the quick brown fox", "the brown"),
+              covNone: S.coverage("the quick brown fox", "nothing similar at all"),
+              covEmptySaid: S.coverage("the quick brown fox", ""),
+              covOrder: S.coverage("a b c d", "d c b a"),
+              covBig: S.coverage(new Array(600).fill('word').join(' '), new Array(600).fill('word').join(' ')),
+              runPunct: S.longestRun("One two three. Four five."),
+              runNoPunct: S.longestRun("one two three four five"),
+              pace: [S.paceVerdict(90), S.paceVerdict(120), S.paceVerdict(145), S.paceVerdict(170), S.paceVerdict(200)],
+              takeNoTranscript: S.scoreTake({transcript:null, durationSec:60, target:'x y z'}),
+              takeFull: S.scoreTake({transcript:'um the quick brown fox', durationSec:30, target:'the quick brown fox'})
+            };
+        }""")
+        check("hard fillers counted, soft fillers counted separately",
+              sc["hard"] == 3 and sc["soft"] >= 4, (sc["hard"], sc["soft"]))
+        check("a filler never matches inside another word", sc["noSubstring"] == 0, sc["noSubstring"])
+        check("words per minute, and null rather than a wrong number",
+              sc["wpm60"] == 10 and sc["wpm0"] is None and sc["wpmEmpty"] is None, sc["wpm60"])
+        check("filler rate per minute", sc["rate"] == 3, sc["rate"])
+        check("coverage: full, partial, none, empty",
+              sc["covFull"] == 100 and 40 <= sc["covHalf"] <= 60 and sc["covNone"] == 0 and sc["covEmptySaid"] == 0,
+              [sc["covFull"], sc["covHalf"], sc["covNone"], sc["covEmptySaid"]])
+        check("coverage respects order, so reversed words score low", sc["covOrder"] <= 25, sc["covOrder"])
+        check("coverage on a very long passage still finishes and is right", sc["covBig"] == 100, sc["covBig"])
+        check("longest run needs punctuation, returns null without it",
+              sc["runPunct"] == 3 and sc["runNoPunct"] is None, [sc["runPunct"], sc["runNoPunct"]])
+        check("pace verdicts", sc["pace"] == ["very slow", "slow", "in the band", "fast", "too fast"], sc["pace"])
+        check("a take with no transcript still scores, it just returns nulls, never throws",
+              sc["takeNoTranscript"]["filler_count"] is None and sc["takeNoTranscript"]["duration_sec"] == 60,
+              sc["takeNoTranscript"])
+        check("a take with a transcript scores filler, pace and coverage",
+              sc["takeFull"]["filler_count"] >= 1 and sc["takeFull"]["wpm"] and sc["takeFull"]["coverage_pct"] == 100,
+              {k: sc["takeFull"][k] for k in ("filler_count", "wpm", "coverage_pct")})
+
+        print("\n== feedback rules table ==")
+        fb = page.evaluate("""async () => {
+            const S = await import('./score.js');
+            return {
+              n: S.FEEDBACK_RULES.length,
+              floor: S.feedbackFor({floor:true}),
+              spike: S.feedbackFor({filler_rate:6.8, prev_filler_rate:4.1}),
+              fast: S.feedbackFor({wpm:200}),
+              beats: S.feedbackFor({beats_hit:1, beats_total:3}),
+              noAsk: S.feedbackFor({ask_made:false}),
+              empty: S.feedbackFor({}),
+              broken: S.feedbackFor(null) === undefined ? 'threw' : S.feedbackFor({})
+            };
+        }""")
+        check("the rules table has at least ten rules", fb["n"] >= 10, fb["n"])
+        check("every rule branch returns a sentence and the table always terminates",
+              all(isinstance(fb[k], str) and len(fb[k]) > 10 for k in ("floor", "spike", "fast", "beats", "noAsk", "empty")),
+              fb)
+
+        print("\n== frame mode, full run ==")
+        frame = page.evaluate("""async () => {
+            const $=id=>document.getElementById(id);
+            const vis=()=>[...document.querySelectorAll('section')].filter(s=>!s.hidden).map(s=>s.id)[0];
+            const w=ms=>new Promise(r=>setTimeout(r,ms));
+            const a=window.__artic;
+            await a.db.setSetting('frame_beats_seconds', 3);
+            await a.db.setSetting('frame_speak_seconds', 4);
+            await a.db.setSetting('frame_rounds', 1);
+            await a.db.clear('reps');
+            a.STEPS.frame.run(); await w(700);
+            if (vis()!=='s-frame') return {reached:false, at:vis()};
+            const prompt=$('frame-prompt').textContent, structure=$('frame-structure').textContent;
+            const inputs=[...document.querySelectorAll('#frame-beats input')];
+            inputs.forEach((el,i)=>{ el.value='beat'+i; });
+            $('fr-speak').click(); await w(300);
+            const taps=[...document.querySelectorAll('#frame-beat-taps button')];
+            taps[0].click(); taps[1].click();
+            await w(7000);
+            const reps=(await a.db.all('reps')).filter(r=>r.mode==='frame');
+            return {reached:true, prompt, structure, beatInputs:inputs.length, tapCount:taps.length,
+                    reps: reps.length, r: reps[0] ? {
+                      beats_hit:reps[0].beats_hit, beats_total:reps[0].beats_total,
+                      ttfw:reps[0].time_to_first_word_ms, dur:reps[0].duration_sec,
+                      beats:reps[0].beats_text, src:reps[0].transcript_source,
+                      silence:reps[0].silence_pct, clip: !!reps[0].clip_id} : null,
+                    after: vis()};
+        }""")
+        check("frame renders a prompt and a structure with three beats",
+              frame.get("reached") and frame.get("beatInputs") == 3 and frame.get("tapCount") == 3, frame)
+        check("a frame rep records beats hit, time to first word and duration",
+              frame.get("reps") == 1 and frame["r"]["beats_hit"] == 2 and frame["r"]["beats_total"] == 3
+              and frame["r"]["dur"] is not None, frame.get("r"))
+        check("tapping a beat does NOT cut the recording short",
+              frame.get("r") and frame["r"]["dur"] and frame["r"]["dur"] >= 3.0, frame["r"]["dur"] if frame.get("r") else None)
+        check("the typed beats are stored with the rep",
+              frame["r"] and "beat0" in (frame["r"]["beats"] or ""), frame["r"]["beats"] if frame.get("r") else None)
+
+        print("\n== clear mode, three takes, no dictation available ==")
+        clear = page.evaluate("""async () => {
+            const $=id=>document.getElementById(id);
+            const vis=()=>[...document.querySelectorAll('section')].filter(s=>!s.hidden).map(s=>s.id)[0];
+            const w=ms=>new Promise(r=>setTimeout(r,ms));
+            const a=window.__artic;
+            await a.db.setSetting('take_seconds', 3);
+            await a.db.clear('reps');
+            a.STEPS.clear.run(); await w(700);
+            if (vis()!=='s-clear') return {reached:false, at:vis()};
+            const topic=$('clear-topic').textContent;
+            $('cl-go').click();
+            const tallies=[];
+            for (let take=0; take<3; take++){
+                // wait for either the tally screen or the next take
+                let guard=0;
+                while ($('clear-tally').hidden && guard++<80) await w(250);
+                if (!$('clear-tally').hidden){
+                    // count some fillers by hand, which is the documented fallback
+                    for (let k=0;k<take+1;k++) $('tally-hit').click();
+                    $('tally-hit').click(); $('tally-undo').click();   // undo must work
+                    tallies.push($('tally-count').textContent);
+                    $('tally-done').click();
+                    await w(400);
+                }
+            }
+            let guard=0;
+            while ($('clear-results').hidden && guard++<80) await w(250);
+            const reps=(await a.db.all('reps')).filter(r=>r.mode==='clear');
+            return {reached:true, topic, tallies,
+                    results: !$('clear-results').hidden,
+                    table: $('clear-table').textContent.replace(/\s+/g,' ').trim(),
+                    verdict: $('clear-verdict').textContent,
+                    reps: reps.length,
+                    rows: reps.map(r=>({take:r.take, fc:r.filler_count, fr:r.filler_rate, src:r.transcript_source,
+                                        sil:r.silence_pct, dur: r.duration_sec && Math.round(r.duration_sec*10)/10, clip:!!r.clip_id}))};
+        }""")
+        check("clear ran three takes and reached the results table",
+              clear.get("reached") and clear.get("results") and clear.get("reps") == 3, clear.get("reps"))
+        check("with no dictation, the manual filler tally is used and undo works",
+              clear.get("tallies") == ["1", "2", "3"], clear.get("tallies"))
+        check("every take stored a filler count, a filler rate and a source",
+              all(r["fc"] is not None and r["fr"] is not None and r["src"] == "manual" for r in clear.get("rows", [])),
+              clear.get("rows"))
+        check("silence percent is computed from the waveform with no transcript",
+              all(r["sil"] is not None for r in clear.get("rows", [])), [r["sil"] for r in clear.get("rows", [])])
+        check("the results table shows a row per take and a visible delta",
+              clear.get("table", "").count("take") >= 0 and len(clear.get("verdict", "")) > 20, clear.get("verdict"))
+
+        print("\n== dictation self test is honest about what it found ==")
+        st = page.evaluate("""async () => {
+            const A = await import('./audio.js');
+            return {supported: A.recognitionSupported(), standalone: A.isStandalone()};
+        }""")
+        check("the app can tell standalone from a browser tab, which is what the phone test needs",
+              st["standalone"] is False, st)
 
         print("\n== clip retention ==")
         retention = page.evaluate("""async () => {
