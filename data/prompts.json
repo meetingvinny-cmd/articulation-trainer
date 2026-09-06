@@ -1,0 +1,906 @@
+{
+"version": 1,
+"authored_by": "automation-builder 2026-09-06, original prompts",
+"prompts": [
+{
+"id": "p001",
+"text": "Explain what you do for work to someone at a party.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p002",
+"text": "Someone asks why you sell on Amazon. Answer in three sentences.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p003",
+"text": "Tell a stranger one true thing about your week that is actually interesting.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p004",
+"text": "Someone asks what you do for fun. Do not say nothing.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p005",
+"text": "Introduce yourself to a group already mid conversation.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p006",
+"text": "Someone asks where you are from. Make it a story, not a city.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p007",
+"text": "Explain your business to someone who has never bought anything online.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p008",
+"text": "Tell someone about the last thing that made you laugh.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p009",
+"text": "Someone asks how your year is going. Be honest without dumping.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p010",
+"text": "Describe your ideal Saturday in under thirty seconds.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p011",
+"text": "Someone compliments you. Respond without deflecting.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p012",
+"text": "Tell a two sentence story about a trip you took.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p013",
+"text": "Someone asks what you are into lately. Pick one thing and go deep.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p014",
+"text": "Explain why you started your business, not what it is.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p015",
+"text": "Someone mentions a topic you know nothing about. Ask three good questions.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p016",
+"text": "Tell someone what you were like at twenty two.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p017",
+"text": "Explain what a private label brand is without jargon.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p018",
+"text": "Someone asks if you are seeing anyone. Answer in one line and move on.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p019",
+"text": "Describe a person you admire and exactly why.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p020",
+"text": "Tell the story of the worst thing that happened at work this month.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p021",
+"text": "Someone asks what you would do with a free year.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p022",
+"text": "Explain the difference between what you do and what everyone thinks you do.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p023",
+"text": "Give a stranger a real compliment that is not about their appearance.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p024",
+"text": "Someone asks about your family. Give one warm specific detail.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p025",
+"text": "Tell someone why you go to the gym, without saying health.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p026",
+"text": "Explain a hobby you dropped and why.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p027",
+"text": "Someone asks what keeps you busy. Do not say work.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p028",
+"text": "Tell a story where you were wrong about something.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p029",
+"text": "Describe your neighborhood to someone who has never been.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p030",
+"text": "Someone asks what you are proud of this year.",
+"category": "party",
+"structure_hint": "past_present_future"
+},
+{
+"id": "p031",
+"text": "Give a one minute status update on your business to someone who invested in it.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p032",
+"text": "Explain to your supplier why the ship date matters this time.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p033",
+"text": "Tell your freight forwarder you need a decision by tomorrow.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p034",
+"text": "Explain why you cut the ad budget on one product.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p035",
+"text": "Give a thirty second update on cash position.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p036",
+"text": "Explain to a partner why you are holding price instead of dropping it.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p037",
+"text": "Tell someone what went wrong last week and what you changed.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p038",
+"text": "Explain your inventory position and what happens if nothing changes.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p039",
+"text": "Walk someone through how you pick a new product.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p040",
+"text": "Explain why one channel is dangerous.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p041",
+"text": "Tell your boss you need to leave early without apologizing three times.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p042",
+"text": "Explain a delay to a customer without making excuses.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p043",
+"text": "Give a one minute recap of the last quarter.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p044",
+"text": "Explain why the cheapest quote is not the best quote.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p045",
+"text": "Tell someone the one number you watch every week and why.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p046",
+"text": "Explain what you would do with fifty thousand dollars in the business.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p047",
+"text": "Describe your biggest operational bottleneck in one minute.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p048",
+"text": "Explain why you fired or would fire a supplier.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p049",
+"text": "Give the case for spending money you do not want to spend.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p050",
+"text": "Explain what you learned from a product that failed.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p051",
+"text": "Tell someone what your business looks like in three years.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p052",
+"text": "Explain a technical part of your work to someone non technical.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p053",
+"text": "Give the one minute version of a decision you have been avoiding.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p054",
+"text": "Explain why a competitor is beating you on one thing.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p055",
+"text": "Tell someone what you would stop doing if you could.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p056",
+"text": "Explain how you decide what to work on today.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p057",
+"text": "Give a status update that includes bad news first.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p058",
+"text": "Explain the risk in your current plan out loud.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p059",
+"text": "Tell someone what would have to be true for this to fail.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p060",
+"text": "Explain the one thing you want someone else to own.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p061",
+"text": "Give the one sentence version of what your business does.",
+"category": "work",
+"structure_hint": "what_so_what_now_what"
+},
+{
+"id": "p062",
+"text": "Tell someone close to you why you were distant last week.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p063",
+"text": "Explain what you need without listing what they did wrong.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p064",
+"text": "Say no to a request from someone you care about.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p065",
+"text": "Tell someone you were wrong, in three sentences, no excuses.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p066",
+"text": "Explain what a good week looks like for you.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p067",
+"text": "Ask for something you have been avoiding asking for.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p068",
+"text": "Tell someone specifically what you appreciate about them.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p069",
+"text": "Explain why you have been working so much, without defending it.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p070",
+"text": "Set a boundary in one calm sentence.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p071",
+"text": "Tell someone what you are working on about yourself.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p072",
+"text": "Explain how you want to be treated when you are stressed.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p073",
+"text": "Ask someone what they need from you this month.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p074",
+"text": "Tell someone the truth about your money situation.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p075",
+"text": "Explain why something they said landed badly, without attacking.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p076",
+"text": "Say what you want to happen next, plainly.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p077",
+"text": "Tell someone you missed them without being heavy about it.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p078",
+"text": "Explain why you changed your mind about something.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p079",
+"text": "Ask a question you actually want the answer to.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p080",
+"text": "Tell someone what you love doing with them.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p081",
+"text": "Explain what you were like before, and what you are rebuilding.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p082",
+"text": "Say the thing you have been rehearsing in your head for a week.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p083",
+"text": "Tell someone they are wrong without making them feel small.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p084",
+"text": "Explain what you are not willing to do anymore.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p085",
+"text": "Ask for help with something specific.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p086",
+"text": "Tell someone what you noticed about them lately.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p087",
+"text": "Explain a plan you have made and invite one opinion.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p088",
+"text": "Say sorry once, properly, and then stop.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p089",
+"text": "Tell someone what you need this weekend.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p090",
+"text": "Explain why you said yes when you meant no.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p091",
+"text": "Describe the relationship you actually want in one minute.",
+"category": "relationship",
+"structure_hint": "yes_because_therefore"
+},
+{
+"id": "p092",
+"text": "Pitch your product to a buyer in sixty seconds.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p093",
+"text": "Ask a supplier for better terms.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p094",
+"text": "Pitch a partnership to someone with a bigger audience.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p095",
+"text": "Ask for a discount without apologizing for asking.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p096",
+"text": "Pitch yourself for a job you are not obviously qualified for.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p097",
+"text": "Ask someone for an introduction.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p098",
+"text": "Pitch the reason someone should buy from you instead of the cheaper option.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p099",
+"text": "Ask an expert for twenty minutes of their time.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p100",
+"text": "Pitch a price increase to an existing customer.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p101",
+"text": "Ask someone to invest in what you are building.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p102",
+"text": "Pitch your brand story in thirty seconds.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p103",
+"text": "Ask for a referral, specifically.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p104",
+"text": "Pitch a service to a business owner who is busy.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p105",
+"text": "Ask a landlord or lender for terms.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p106",
+"text": "Pitch why now is the right time.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p107",
+"text": "Ask someone to make a decision by a date.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p108",
+"text": "Pitch the problem before you pitch the solution.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p109",
+"text": "Ask for feedback on something you made.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p110",
+"text": "Pitch to someone who already said no once.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p111",
+"text": "Ask a friend for a favor that costs them real effort.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p112",
+"text": "Pitch the smallest possible first step.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p113",
+"text": "Ask someone what it would take to get a yes.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p114",
+"text": "Pitch to someone who does not know your category.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p115",
+"text": "Ask for a longer payment window.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p116",
+"text": "Pitch your best product in one sentence.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p117",
+"text": "Ask someone to hold you accountable.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p118",
+"text": "Pitch a risky idea and name the risk first.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p119",
+"text": "Ask a hard question early in a negotiation.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p120",
+"text": "Pitch the value, not the features.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p121",
+"text": "Ask for what you actually want, not the safe version.",
+"category": "pitch",
+"structure_hint": "problem_solution_benefit"
+},
+{
+"id": "p122",
+"text": "Someone blames you for something that was not your fault. Respond.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p123",
+"text": "Push back on a price you think is unfair.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p124",
+"text": "Tell someone their work was not good enough.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p125",
+"text": "Disagree with someone senior to you, respectfully.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p126",
+"text": "Respond to an angry message without matching the anger.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p127",
+"text": "Hold your position after someone pushes back twice.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p128",
+"text": "Say no to a request for the third time.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p129",
+"text": "Correct someone in front of other people, carefully.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p130",
+"text": "Tell someone they crossed a line.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p131",
+"text": "Respond to criticism that is partly true.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p132",
+"text": "End a conversation that is going nowhere.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p133",
+"text": "Ask for accountability without accusing.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p134",
+"text": "Tell someone you are not going to do what they asked.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p135",
+"text": "Handle being interrupted repeatedly.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p136",
+"text": "Respond when someone questions your competence.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p137",
+"text": "Deliver bad news to someone who will not take it well.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p138",
+"text": "Refuse a request from someone who has helped you before.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p139",
+"text": "Tell someone their excuse is not good enough.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p140",
+"text": "Answer a hostile question calmly.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p141",
+"text": "Say you need time before answering.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p142",
+"text": "Call out a pattern, not just an incident.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p143",
+"text": "Respond to a lowball offer.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p144",
+"text": "Tell someone the deal is off.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p145",
+"text": "Hold a deadline when someone asks for more time.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p146",
+"text": "Address something you let slide three times.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p147",
+"text": "Say the uncomfortable thing first, before they do.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p148",
+"text": "Respond when someone takes credit for your work.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p149",
+"text": "Refuse to be rushed into a decision.",
+"category": "conflict",
+"structure_hint": "scqa"
+},
+{
+"id": "p150",
+"text": "Tell someone what will happen if this repeats.",
+"category": "conflict",
+"structure_hint": "scqa"
+}
+]
+}

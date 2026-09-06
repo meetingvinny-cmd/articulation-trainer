@@ -1,0 +1,2116 @@
+{
+"deck_id": "seed300",
+"deck_name": "Core 300",
+"version": 1,
+"authored_by": "automation-builder, 2026-09-06. All definitions and example sentences written for this app. No text copied from any book.",
+"tiers": {
+"1": "precision verbs",
+"2": "business and negotiation",
+"3": "people and behavior",
+"4": "words that land",
+"5": "ideas and thinking",
+"6": "social and warmth"
+},
+"cards": [
+{
+"word": "mitigate",
+"definition": "make something less bad or less severe",
+"example": "We can mitigate the delay by air shipping half the order.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "delegate",
+"definition": "hand a task to someone else and let them own it",
+"example": "I need to delegate the supplier follow ups instead of doing all of them myself.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "corroborate",
+"definition": "back up a claim with a second piece of evidence",
+"example": "The Keepa chart corroborates what the seller told me about his price drop.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "curtail",
+"definition": "cut something back before it gets out of hand",
+"example": "I curtailed the ad spend on that campaign before it burned another week.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "reconcile",
+"definition": "make two sets of numbers agree",
+"example": "I still have to reconcile the supplier statement against what we actually wired.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "escalate",
+"definition": "move an issue up to someone with more authority",
+"example": "If they miss the ship date again I escalate it to the factory owner.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "defer",
+"definition": "put something off on purpose, not by accident",
+"example": "I am deferring the reorder until the sell through data comes in.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "clarify",
+"definition": "make something plainer so nobody guesses",
+"example": "Let me clarify what I am asking for so we do not waste a week.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "consolidate",
+"definition": "pull scattered things into one place",
+"example": "I consolidated four spreadsheets into one so the numbers stop disagreeing.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "substantiate",
+"definition": "prove a claim with real backing",
+"example": "He can say the margin is thirty percent, but he has to substantiate it.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "expedite",
+"definition": "make something happen faster than normal",
+"example": "I paid to expedite the sample so we could test it this week.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "allocate",
+"definition": "assign money or time to a specific job",
+"example": "I allocate two hundred a day to that portfolio and nothing more.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "verify",
+"definition": "check that something is actually true",
+"example": "Verify the tracking number before you tell me the pallet shipped.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "prioritize",
+"definition": "decide what goes first and mean it",
+"example": "I have to prioritize the cash problems before the fun projects.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "streamline",
+"definition": "strip the steps that do not earn their place",
+"example": "We streamlined the intake so it takes five minutes instead of thirty.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "forecast",
+"definition": "estimate what happens next from what already happened",
+"example": "My forecast says we run out of stock in six weeks at this velocity.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "dispute",
+"definition": "formally push back on a charge or claim",
+"example": "I am going to dispute the freight surcharge, it was never quoted.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "waive",
+"definition": "give up a right or a fee on purpose",
+"example": "He waived the tooling fee to win the second order.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "retract",
+"definition": "take back something you said",
+"example": "I retracted the offer once I saw the real landed cost.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "concede",
+"definition": "admit the other side has a point",
+"example": "I will concede the timeline was tight, but the spec never changed.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "acknowledge",
+"definition": "say out loud that you heard or saw something",
+"example": "Acknowledge what she said before you jump to your answer.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "anticipate",
+"definition": "see it coming and get ahead of it",
+"example": "I anticipated the port delay and moved the order up two weeks.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "designate",
+"definition": "name a specific person or thing for a job",
+"example": "Designate one person to own the reply or nobody replies.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "authorize",
+"definition": "give official permission",
+"example": "Only I authorize a wire over five thousand.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "override",
+"definition": "cancel a normal rule with a higher one",
+"example": "I overrode the bid cap for one week to hold rank.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "postpone",
+"definition": "move something to a later date",
+"example": "We postponed the launch until the images were fixed.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "terminate",
+"definition": "end something formally and completely",
+"example": "We terminated the agreement rather than renegotiate it again.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "initiate",
+"definition": "start something deliberately",
+"example": "I initiated the conversation instead of waiting for him to call.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "implement",
+"definition": "actually put a plan into practice",
+"example": "Everyone likes the plan, nobody wants to implement it.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "refine",
+"definition": "improve something that already works",
+"example": "I refined the bullet points instead of rewriting the whole listing.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "quantify",
+"definition": "put a number on it",
+"example": "Do not tell me it is expensive, quantify it.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "validate",
+"definition": "confirm something holds up under a test",
+"example": "The bench test validated the three wire conversion.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "undermine",
+"definition": "weaken something quietly from underneath",
+"example": "Saying yes to everything undermined my own position.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "reinforce",
+"definition": "make something stronger",
+"example": "Every time I hold the line it reinforces that I mean it.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "diversify",
+"definition": "spread risk across more than one thing",
+"example": "I need to diversify off one channel before it decides my income.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "optimize",
+"definition": "tune something for the best result",
+"example": "We optimize the campaign weekly, not daily.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "scrutinize",
+"definition": "look at something hard and closely",
+"example": "Scrutinize the invoice line by line before you pay it.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "rectify",
+"definition": "fix a wrong thing",
+"example": "They agreed to rectify the shortage on the next shipment.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "circumvent",
+"definition": "get around an obstacle",
+"example": "He tried to circumvent the approval step and it cost us.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "alleviate",
+"definition": "take the pressure off",
+"example": "Paying that card down would alleviate most of the monthly stress.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "stipulate",
+"definition": "state a condition as part of the deal",
+"example": "The contract stipulates payment within thirty days of arrival.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "exacerbate",
+"definition": "make a bad thing worse",
+"example": "Cutting the budget mid launch exacerbated the rank slide.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "facilitate",
+"definition": "make something easier to happen",
+"example": "My job is to facilitate the decision, not to make it for him.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "delineate",
+"definition": "draw a clear line around what is what",
+"example": "Delineate who owns which task before the project starts.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "reiterate",
+"definition": "say it again because it matters",
+"example": "Let me reiterate the deadline so there is no confusion.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "articulate",
+"definition": "put a thought into clear words",
+"example": "I know what I mean, I just have to articulate it faster.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "advocate",
+"definition": "argue publicly for something",
+"example": "I advocate for the cheaper option because it protects cash.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "deter",
+"definition": "stop someone from doing something by raising the cost",
+"example": "A signed agreement deters the casual excuse.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "endorse",
+"definition": "publicly back something or someone",
+"example": "I will endorse the supplier once he hits two clean orders.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "relinquish",
+"definition": "let go of control of something",
+"example": "I had to relinquish the daily uploads to get my evenings back.",
+"tier": 1,
+"tier_label": "precision verbs"
+},
+{
+"word": "leverage",
+"definition": "use a small thing to move a big thing",
+"example": "My leverage is that he needs the reorder more than I need the discount.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "contingent",
+"definition": "depending on something else happening first",
+"example": "The second payment is contingent on a clean inspection.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "provisional",
+"definition": "temporary, holds until the real version lands",
+"example": "That is a provisional number until the freight invoice arrives.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "remit",
+"definition": "send payment",
+"example": "Please remit the balance by Friday.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "indemnify",
+"definition": "promise to cover someone else's loss",
+"example": "The supplier agreed to indemnify us for defective units.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "arrears",
+"definition": "money that is overdue",
+"example": "The account is ninety days in arrears.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "escrow",
+"definition": "money held by a third party until conditions are met",
+"example": "We put the deposit in escrow until the samples pass.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "liquidity",
+"definition": "how fast you can turn something into cash",
+"example": "Inventory is an asset with terrible liquidity.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "margin",
+"definition": "what is left after cost, per sale",
+"example": "At that price the margin is four dollars, not fourteen.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "overhead",
+"definition": "the cost of running the business no matter what you sell",
+"example": "Overhead eats the profit long before the product does.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "liability",
+"definition": "something you owe or something that can cost you",
+"example": "That unsold pallet is a liability, not inventory.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "equity",
+"definition": "the part you actually own after debts",
+"example": "The equity in the house is real money I am not touching yet.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "accrue",
+"definition": "build up over time",
+"example": "Interest accrues daily on that balance.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "amortize",
+"definition": "spread a cost across the periods it serves",
+"example": "We amortize the tooling cost over the first three orders.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "procurement",
+"definition": "the job of buying what the business needs",
+"example": "Procurement is where the profit is actually made.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "remittance",
+"definition": "a payment you send",
+"example": "The remittance advice shows which invoices it covers.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "arbitration",
+"definition": "settling a dispute outside court with a neutral judge",
+"example": "The contract forces arbitration instead of a lawsuit.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "breach",
+"definition": "breaking a term of the agreement",
+"example": "Missing the ship date twice is a breach, not a hiccup.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "covenant",
+"definition": "a promise written into an agreement",
+"example": "The loan has a covenant that caps new debt.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "default",
+"definition": "failing to do what the agreement required",
+"example": "One missed payment does not trigger default, three do.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "forbearance",
+"definition": "the lender agreeing not to enforce for a while",
+"example": "I asked for forbearance for sixty days instead of missing outright.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "lien",
+"definition": "a legal claim on property until a debt is paid",
+"example": "There is a lien on the vehicle until the note is paid.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "collateral",
+"definition": "what backs a loan if you cannot pay",
+"example": "They wanted collateral I was not willing to pledge.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "solvency",
+"definition": "being able to pay what you owe",
+"example": "Solvency is not the same thing as profit.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "insolvent",
+"definition": "unable to pay your debts",
+"example": "Plenty of profitable companies go insolvent on timing.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "receivable",
+"definition": "money customers owe you",
+"example": "The receivable is real, it just is not cash yet.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "disbursement",
+"definition": "money going out",
+"example": "The disbursement schedule pays the supplier in three parts.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "valuation",
+"definition": "what something is judged to be worth",
+"example": "The valuation was built on a revenue multiple I do not trust.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "appraisal",
+"definition": "a formal opinion of value",
+"example": "The appraisal came in under what I owed.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "underwrite",
+"definition": "take on the risk of something",
+"example": "The bank would not underwrite a business under two years old.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "surety",
+"definition": "a party who guarantees another party's obligation",
+"example": "The parent company acted as surety on the order.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "recourse",
+"definition": "what you can do if the other side fails",
+"example": "Without a signed PO I have no recourse.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "concession",
+"definition": "something you give up to move the deal",
+"example": "I gave one concession on the ship date and held price.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "stipulation",
+"definition": "a specific condition in an agreement",
+"example": "My stipulation was net thirty or no order.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "mandate",
+"definition": "an instruction with authority behind it",
+"example": "The mandate was clear, cut spend twenty percent.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "jurisdiction",
+"definition": "whose rules apply and where",
+"example": "The contract puts jurisdiction in Pennsylvania.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "quorum",
+"definition": "the minimum people needed for a decision to count",
+"example": "We did not have a quorum so nothing was decided.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "proxy",
+"definition": "someone acting with your authority",
+"example": "He signed by proxy while I was out of the country.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "tariff",
+"definition": "a tax on imported goods",
+"example": "The tariff added eleven percent to the landed cost.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "levy",
+"definition": "a charge imposed by an authority",
+"example": "The port levied a storage fee after the free days ran out.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "rebate",
+"definition": "money paid back after the purchase",
+"example": "The rebate came four months after we needed the cash.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "retainer",
+"definition": "money paid up front to hold someone's time",
+"example": "I would rather charge a retainer than bill by the hour.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "attrition",
+"definition": "slow loss over time",
+"example": "Our review count drops by attrition if we stop asking.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "benchmark",
+"definition": "the standard you measure against",
+"example": "My benchmark is the competitor at nineteen eighty eight.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "remuneration",
+"definition": "what someone is paid for their work",
+"example": "Remuneration was never the issue, the hours were.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "arbitrate",
+"definition": "settle a disagreement between two sides",
+"example": "The platform arbitrates the claim, not the seller.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "consignment",
+"definition": "goods you hold but do not own until sold",
+"example": "They offered consignment so I would carry no inventory risk.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "prorate",
+"definition": "split a cost proportionally",
+"example": "We prorated the freight across the two SKUs by weight.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "reconciliation",
+"definition": "the process of making two records agree",
+"example": "The monthly reconciliation is where the errors surface.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "escalation",
+"definition": "a planned rise in price or in urgency",
+"example": "The contract has a price escalation clause tied to material cost.",
+"tier": 2,
+"tier_label": "business and negotiation"
+},
+{
+"word": "magnanimous",
+"definition": "generous toward someone you could have crushed",
+"example": "He was magnanimous about the mistake and never brought it up again.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "petulant",
+"definition": "sulky and irritable over something small",
+"example": "I got petulant about the parking spot and heard myself do it.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "candid",
+"definition": "honest even when it costs you something",
+"example": "Be candid with me, is the ship date real or hopeful?",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "obstinate",
+"definition": "refusing to move for no good reason",
+"example": "He is not principled, he is obstinate.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "gracious",
+"definition": "warm and easy with people, especially when you do not have to be",
+"example": "She was gracious about me being late and it disarmed me.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "meticulous",
+"definition": "careful about every small detail",
+"example": "His carton labeling is meticulous, which is why I use him.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "abrasive",
+"definition": "rubs people the wrong way",
+"example": "My tone gets abrasive when I am tired.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "affable",
+"definition": "easy to talk to",
+"example": "The freight guy is affable, which is worth more than his rate.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "aloof",
+"definition": "distant on purpose",
+"example": "I read her as aloof when she was actually nervous.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "brusque",
+"definition": "blunt to the point of rude",
+"example": "I was brusque on the call and had to walk it back.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "complacent",
+"definition": "comfortable enough to stop trying",
+"example": "Two good months made me complacent.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "conscientious",
+"definition": "does the job right when nobody is watching",
+"example": "She is conscientious, I never have to check her work twice.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "cordial",
+"definition": "polite and friendly without being close",
+"example": "We keep it cordial, we are not friends.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "deferential",
+"definition": "showing respect for someone's authority or judgment",
+"example": "I was deferential to his read on freight because it is his lane.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "diligent",
+"definition": "steady and thorough over time",
+"example": "Diligent beats brilliant on a twelve month project.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "discreet",
+"definition": "careful about what you repeat",
+"example": "He is discreet, which is why people tell him things.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "dogmatic",
+"definition": "holds an opinion like it is a law",
+"example": "Do not be dogmatic about the price until you see the data.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "evasive",
+"definition": "avoids answering straight",
+"example": "He got evasive the second I asked for the invoice.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "fastidious",
+"definition": "fussy about standards and cleanliness",
+"example": "She is fastidious about the kitchen and I respect it.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "flippant",
+"definition": "treating a serious thing lightly",
+"example": "My flippant answer made her think I did not care.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "forthright",
+"definition": "says it straight without hedging",
+"example": "Be forthright about the money instead of hinting.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "gregarious",
+"definition": "enjoys being around people",
+"example": "I used to be gregarious and I want that back.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "impetuous",
+"definition": "acts on impulse without thinking it through",
+"example": "The impetuous version of me closed deals and also lost money.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "indignant",
+"definition": "angry at something you think is unfair",
+"example": "He was indignant about the fee and he was right.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "ingratiating",
+"definition": "trying too hard to be liked",
+"example": "Saying yes to everything came off as ingratiating, not generous.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "insolent",
+"definition": "openly disrespectful",
+"example": "The reply was insolent and I ended the thread.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "intransigent",
+"definition": "will not compromise at all",
+"example": "The supplier was intransigent on MOQ so I walked.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "judicious",
+"definition": "shows good judgment",
+"example": "A judicious no is worth more than an eager yes.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "laconic",
+"definition": "says a lot in very few words",
+"example": "His laconic answers made people lean in.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "mercurial",
+"definition": "mood changes fast and without warning",
+"example": "He is mercurial, so I never negotiate with him after six.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "morose",
+"definition": "gloomy and withdrawn",
+"example": "I get morose when the money is tight and it shows on my face.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "obsequious",
+"definition": "fawning, agreeing with everything to please",
+"example": "Obsequious is what I was, and she felt it.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "pedantic",
+"definition": "obsessed with small correctness",
+"example": "Do not be pedantic about the wording, answer the question.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "pragmatic",
+"definition": "chooses what works over what is ideal",
+"example": "The pragmatic call is air freight half and sea the rest.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "presumptuous",
+"definition": "assuming more access or agreement than you have",
+"example": "It was presumptuous of me to plan her weekend.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "reticent",
+"definition": "holds back, does not volunteer much",
+"example": "She was reticent about her family until the third date.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "sanctimonious",
+"definition": "acting morally superior",
+"example": "Nobody listens to a sanctimonious lecture.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "scrupulous",
+"definition": "strictly honest and careful",
+"example": "He is scrupulous about the count, every carton matches.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "self-effacing",
+"definition": "plays down your own importance",
+"example": "Self effacing is charming until it becomes invisible.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "stoic",
+"definition": "takes hardship without complaining",
+"example": "Stoic is not the same as silent.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "tactful",
+"definition": "says the hard thing without cutting",
+"example": "Be tactful, not soft.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "tenacious",
+"definition": "does not let go",
+"example": "Tenacious on the follow up is how the deal got done.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "unflappable",
+"definition": "stays calm no matter what",
+"example": "She is unflappable, which is why she runs the call.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "vindictive",
+"definition": "wants to get back at someone",
+"example": "A vindictive email costs more than the argument was worth.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "garrulous",
+"definition": "talks too much, mostly about nothing",
+"example": "I get garrulous when I am nervous, that is the tell.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "glib",
+"definition": "smooth talking but shallow",
+"example": "His glib answer told me he had not read the file.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "humble",
+"definition": "honest about your own size without shrinking",
+"example": "Humble is accurate, not small.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "imperious",
+"definition": "bossy in an arrogant way",
+"example": "Imperious gets compliance and kills loyalty.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "meek",
+"definition": "too soft to push back",
+"example": "Meek is what drove her away, not kindness.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "resolute",
+"definition": "fixed on a decision and calm about it",
+"example": "Resolute is what I am rebuilding, decide once and hold.",
+"tier": 3,
+"tier_label": "people and behavior"
+},
+{
+"word": "unequivocal",
+"definition": "leaves zero room for doubt",
+"example": "My answer is an unequivocal no.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "categorical",
+"definition": "absolute, no exceptions",
+"example": "That is a categorical rule, not a preference.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "ostensibly",
+"definition": "on the surface, but probably not really",
+"example": "He called ostensibly about the invoice, actually about the reorder.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "notwithstanding",
+"definition": "in spite of that",
+"example": "Notwithstanding the delay, the numbers still work.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "invariably",
+"definition": "every single time",
+"example": "He invariably asks for a discount at the end of the call.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "inherently",
+"definition": "by its own nature",
+"example": "Air freight is inherently more expensive, that is not a surprise.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "fundamentally",
+"definition": "at the root of it",
+"example": "Fundamentally this is a structure problem, not a vocabulary problem.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "decisively",
+"definition": "in a way that settles it",
+"example": "Move decisively or do not move.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "explicitly",
+"definition": "stated out loud, in plain words",
+"example": "I explicitly said no new spend this week.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "implicitly",
+"definition": "understood without being said",
+"example": "By saying yes I implicitly agreed to the whole thing.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "conclusively",
+"definition": "proven, argument over",
+"example": "The bench test settled it conclusively.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "demonstrably",
+"definition": "you can show it, not just claim it",
+"example": "That listing is demonstrably converting better since the rewrite.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "patently",
+"definition": "obviously, to anyone looking",
+"example": "That quote is patently above market.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "manifestly",
+"definition": "clearly and visibly",
+"example": "He is manifestly not ready to ship on time.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "arguably",
+"definition": "you could make a case for it",
+"example": "That is arguably the best photo in the set.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "ultimately",
+"definition": "when everything settles out",
+"example": "Ultimately the price is what decides it.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "consequently",
+"definition": "because of that",
+"example": "We missed the cutoff, consequently the pallet sits a week.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "accordingly",
+"definition": "in line with that",
+"example": "The data changed, so I adjusted the bid accordingly.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "nevertheless",
+"definition": "even so",
+"example": "It was expensive, nevertheless it was the right call.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "regardless",
+"definition": "no matter what else",
+"example": "Regardless of the excuse, the deadline stands.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "precisely",
+"definition": "exactly, no rounding",
+"example": "That is precisely the problem I was describing.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "squarely",
+"definition": "directly and without dodging",
+"example": "The blame sits squarely with me.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "wholly",
+"definition": "entirely",
+"example": "That claim is wholly unsupported.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "markedly",
+"definition": "noticeably more or less",
+"example": "Conversion is markedly better on the new main image.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "substantially",
+"definition": "by a large amount",
+"example": "Landed cost went up substantially after the tariff.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "negligible",
+"definition": "so small it does not matter",
+"example": "The difference is negligible, do not spend an hour on it.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "marginal",
+"definition": "barely enough to count",
+"example": "The gain is marginal and the risk is not.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "pivotal",
+"definition": "the point everything turns on",
+"example": "The inspection is the pivotal step.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "paramount",
+"definition": "above everything else",
+"example": "Cash flow is paramount right now.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "tantamount",
+"definition": "effectively the same as",
+"example": "Silence here is tantamount to agreement.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "requisite",
+"definition": "required for the thing to happen",
+"example": "He does not have the requisite volume for that price.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "imperative",
+"definition": "must happen, not optional",
+"example": "It is imperative we ship before the holiday cutoff.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "indispensable",
+"definition": "cannot do without it",
+"example": "She is indispensable on that account.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "redundant",
+"definition": "repeated with no added value",
+"example": "Half those bullet points are redundant.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "superfluous",
+"definition": "more than is needed",
+"example": "The extra packaging is superfluous and costs us margin.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "untenable",
+"definition": "cannot be defended or held",
+"example": "Carrying both at that price is untenable.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "tenable",
+"definition": "can be held or defended",
+"example": "At nineteen eighty eight the position is tenable.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "viable",
+"definition": "can actually work",
+"example": "One channel is not a viable business.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "plausible",
+"definition": "believable on its face",
+"example": "The excuse is plausible, it is still an excuse.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "dubious",
+"definition": "doubtful, probably not right",
+"example": "His unit count is dubious.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "spurious",
+"definition": "fake or based on a false link",
+"example": "That is a spurious correlation, sales moved for another reason.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "irrefutable",
+"definition": "cannot be argued against",
+"example": "The settlement report is irrefutable, the fee is wrong.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "incontrovertible",
+"definition": "beyond dispute",
+"example": "The photos are incontrovertible, the carton was crushed.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "palpable",
+"definition": "you can almost feel it",
+"example": "The tension in that call was palpable.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "salient",
+"definition": "the point that stands out",
+"example": "The salient issue is timing, not price.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "germane",
+"definition": "directly relevant",
+"example": "That is interesting but not germane to the decision.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "extraneous",
+"definition": "off topic, does not belong",
+"example": "Cut the extraneous detail and give me the number.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "prohibitive",
+"definition": "so expensive it stops you",
+"example": "Air freight on that weight is prohibitive.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "nominal",
+"definition": "in name only, or tiny in amount",
+"example": "There is a nominal fee, about two dollars.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "disproportionate",
+"definition": "way out of scale with the cause",
+"example": "My reaction was disproportionate to what she actually said.",
+"tier": 4,
+"tier_label": "words that land"
+},
+{
+"word": "premise",
+"definition": "the thing an argument is built on",
+"example": "Your premise is wrong, so the conclusion does not matter.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "corollary",
+"definition": "something that follows automatically from the main point",
+"example": "The corollary is that we cannot raise price and cut ads at once.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "precedent",
+"definition": "an earlier case that sets the pattern",
+"example": "If I discount now I set a precedent for every order after.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "threshold",
+"definition": "the line where something starts to count",
+"example": "Below fifty units it is under my threshold to care.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "disposition",
+"definition": "someone's usual temperament, or how a matter gets settled",
+"example": "His disposition is calm, which is why he handles the angry calls.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "criterion",
+"definition": "a single standard used to judge",
+"example": "My only criterion is whether it clears five hundred a month.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "paradigm",
+"definition": "the whole model of how something works",
+"example": "Selling on one channel is an old paradigm.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "rationale",
+"definition": "the reasoning behind a decision",
+"example": "Give me the rationale, not just the number.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "caveat",
+"definition": "a warning attached to the answer",
+"example": "The caveat is that this assumes the tariff does not change.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "nuance",
+"definition": "a small difference that changes the meaning",
+"example": "There is a nuance between firm and rigid.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "discrepancy",
+"definition": "two things that should match and do not",
+"example": "There is a discrepancy of four hundred between the invoice and the wire.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "anomaly",
+"definition": "a one off that breaks the pattern",
+"example": "One good day is an anomaly, not a trend.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "correlation",
+"definition": "two things moving together",
+"example": "Correlation is not enough to move budget.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "causation",
+"definition": "one thing actually causing the other",
+"example": "Prove causation before you scale the spend.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "inference",
+"definition": "a conclusion you draw from evidence",
+"example": "My inference is that he is out of stock, he never said so.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "conjecture",
+"definition": "a guess with no evidence behind it",
+"example": "That is conjecture, find the report.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "hypothesis",
+"definition": "a testable guess",
+"example": "My hypothesis is that the main image is the bottleneck.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "consensus",
+"definition": "general agreement in a group",
+"example": "We reached consensus without anyone loving it.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "dichotomy",
+"definition": "a split into two opposed parts",
+"example": "The dichotomy between saying yes and being kind is false.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "paradox",
+"definition": "two true things that seem to contradict",
+"example": "The paradox is that saying no made her want me more.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "analogy",
+"definition": "explaining one thing by comparing it to another",
+"example": "Use an analogy when the numbers alone will not land.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "aggregate",
+"definition": "the total, everything added together",
+"example": "In aggregate the account is profitable, per SKU it is not.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "variance",
+"definition": "how much something swings from the expected",
+"example": "The variance week to week is bigger than the trend.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "trajectory",
+"definition": "the path something is on",
+"example": "The trajectory is fine, the current number is not.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "magnitude",
+"definition": "how big the thing is",
+"example": "We agree on direction, we disagree on magnitude.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "parameter",
+"definition": "a boundary you set for the work",
+"example": "Set the parameters before you start or it never ends.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "constraint",
+"definition": "a hard limit you must work inside",
+"example": "Cash is the constraint, not ideas.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "contingency",
+"definition": "a backup plan for if it goes wrong",
+"example": "My contingency is air freight on half the units.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "ramification",
+"definition": "a downstream consequence",
+"example": "The ramification of a stockout is rank, not just lost sales.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "implication",
+"definition": "what it means for everything else",
+"example": "The implication is that we reorder six weeks earlier.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "prerequisite",
+"definition": "something required before you can start",
+"example": "A clean inspection is a prerequisite for the second payment.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "catalyst",
+"definition": "the thing that sets it off",
+"example": "The price cut was the catalyst for the whole recovery.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "impetus",
+"definition": "the push that gets it moving",
+"example": "The tariff was the impetus to find a second supplier.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "momentum",
+"definition": "the force you build by keeping going",
+"example": "Momentum is the whole point of a daily habit.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "scope",
+"definition": "how far the work reaches",
+"example": "Keep the scope tight or the project eats the month.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "latitude",
+"definition": "room to make your own call",
+"example": "Give him latitude on the design, not on the deadline.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "leeway",
+"definition": "slack in the schedule or the rules",
+"example": "There is no leeway on the holiday cutoff.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "baseline",
+"definition": "the starting number you measure from",
+"example": "Take a baseline recording before you change anything.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "deviation",
+"definition": "how far off the standard you drifted",
+"example": "Any deviation from the spec gets flagged at inspection.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "propensity",
+"definition": "a tendency to do something",
+"example": "I have a propensity to say yes before I have thought.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "prevalence",
+"definition": "how widespread something is",
+"example": "The prevalence of that defect decides whether we recall.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "equilibrium",
+"definition": "the point where forces balance",
+"example": "Price finds equilibrium once both of us stop moving.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "juncture",
+"definition": "a point in time where a decision has to be made",
+"example": "At this juncture I either reorder or I let it go.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "crux",
+"definition": "the heart of the matter",
+"example": "The crux is that I never asked her for anything.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "tenet",
+"definition": "a core belief a system runs on",
+"example": "A tenet of the plan is that I never touch the emergency fund.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "axiom",
+"definition": "something taken as obviously true",
+"example": "It is an axiom here that cash beats revenue.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "doctrine",
+"definition": "a settled body of rules and beliefs",
+"example": "Our PPC doctrine says never pause, bid down instead.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "framework",
+"definition": "a structure for thinking about something",
+"example": "Use a framework so you are not composing live.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "synthesis",
+"definition": "combining parts into one coherent whole",
+"example": "The synthesis of both reads is that we hold price.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "distinction",
+"definition": "the specific difference between two things",
+"example": "The distinction between firm and cold is the whole game.",
+"tier": 5,
+"tier_label": "ideas and thinking"
+},
+{
+"word": "rapport",
+"definition": "an easy connection where talking feels natural",
+"example": "We built rapport before I asked him for anything.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "deference",
+"definition": "treating someone's judgment as worth more than yours in their lane",
+"example": "Show deference on freight, he knows it better than I do.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "earnest",
+"definition": "serious and sincere, not performing",
+"example": "Ask the question earnest, not clever.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "obliging",
+"definition": "willing to help without being asked twice",
+"example": "He was obliging about the reship and I noticed.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "generous",
+"definition": "gives more than the situation required",
+"example": "Be generous with credit, tight with promises.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "empathy",
+"definition": "feeling what the other person is feeling",
+"example": "Empathy is not agreement, it is understanding.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "camaraderie",
+"definition": "the easy loyalty between people who do the same hard thing",
+"example": "There is camaraderie between sellers that nobody outside gets.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "goodwill",
+"definition": "the credit you build by being decent over time",
+"example": "Goodwill is the only thing that survives a bad quarter.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "reciprocity",
+"definition": "the pull to give back after receiving",
+"example": "Asking for a small favor triggers reciprocity, giving does not.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "cordiality",
+"definition": "warm politeness",
+"example": "Cordiality costs nothing and opens doors.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "warmth",
+"definition": "the felt sense that you are glad they are there",
+"example": "Warmth is the thing people remember, not the words.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "sincerity",
+"definition": "meaning what you say",
+"example": "Sincerity is the difference between a compliment and flattery.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "gratitude",
+"definition": "actually feeling thankful, not just saying it",
+"example": "I told him specifically what I was grateful for, not just thanks.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "humility",
+"definition": "an accurate view of your own size",
+"example": "Humility is not shrinking, it is not inflating.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "tact",
+"definition": "saying the hard thing without leaving a mark",
+"example": "Tact is timing plus word choice.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "poise",
+"definition": "staying composed when it would be easy not to",
+"example": "She held her poise through the whole complaint.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "composure",
+"definition": "calm under pressure",
+"example": "I lost composure and that was the real mistake.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "charisma",
+"definition": "the pull that makes people want to be near you",
+"example": "Charisma is mostly presence and attention.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "levity",
+"definition": "lightness that breaks the tension",
+"example": "A little levity saved that meeting.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "banter",
+"definition": "quick playful back and forth",
+"example": "Banter is how I used to open and I want it back.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "repartee",
+"definition": "fast, clever conversational comeback",
+"example": "Repartee is not insults, it is timing.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "wit",
+"definition": "fast intelligence that lands as funny",
+"example": "Wit is the cheapest status there is.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "charm",
+"definition": "making people feel good in your company",
+"example": "Charm is attention pointed at them, not performance about you.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "grace",
+"definition": "handling something awkward without making it worse",
+"example": "She handled my mistake with grace.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "courtesy",
+"definition": "the small respectful things you do by default",
+"example": "Courtesy is a habit, not a mood.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "hospitality",
+"definition": "making someone feel welcome in your space",
+"example": "Hospitality is why people come back.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "solidarity",
+"definition": "standing with someone publicly",
+"example": "I showed solidarity instead of quietly agreeing later.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "kinship",
+"definition": "the feeling of being the same kind of person",
+"example": "There was instant kinship, we both build things alone.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "allegiance",
+"definition": "loyalty you have chosen and stated",
+"example": "My allegiance is to the plan, not the mood.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "loyalty",
+"definition": "staying with someone when it costs you",
+"example": "Loyalty is proven in the inconvenient moment.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "trust",
+"definition": "the belief that someone will do what they said",
+"example": "Trust is built by small kept promises, not big ones.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "candor",
+"definition": "open honesty, even when it is awkward",
+"example": "Candor early prevents a fight later.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "vulnerability",
+"definition": "letting someone see a real weak spot",
+"example": "Vulnerability is strength when it is chosen, not leaked.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "presence",
+"definition": "being fully there with the person in front of you",
+"example": "Presence beats every clever line.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "attentive",
+"definition": "noticing and responding to what they need",
+"example": "Be attentive without hovering.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "receptive",
+"definition": "open to what someone is offering",
+"example": "She was receptive because I asked instead of told.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "approachable",
+"definition": "easy for people to come talk to",
+"example": "Approachable is a posture, not a personality.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "engaging",
+"definition": "holds attention in a good way",
+"example": "He is engaging because he asks better questions.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "disarming",
+"definition": "takes the defensiveness out of someone",
+"example": "A disarming admission ended the whole argument.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "magnetic",
+"definition": "people move toward you without knowing why",
+"example": "Magnetic is what I used to be at a table of strangers.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "genuine",
+"definition": "real, not put on",
+"example": "People can tell genuine from performed in about four seconds.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "considerate",
+"definition": "thinks about the effect on other people",
+"example": "Considerate is small and constant, not grand.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "thoughtful",
+"definition": "puts real thought into what someone needs",
+"example": "A thoughtful question beats an expensive gift.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "supportive",
+"definition": "backs someone up in a way they can feel",
+"example": "Supportive means showing up, not agreeing with everything.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "encouraging",
+"definition": "gives someone the push to keep going",
+"example": "Be encouraging about effort, specific about results.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "appreciative",
+"definition": "showing you value what someone did",
+"example": "Appreciative and specific, always both.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "acknowledgment",
+"definition": "openly noticing what someone did or said",
+"example": "Acknowledgment is the cheapest thing that lands the hardest.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "validation",
+"definition": "confirming someone's feeling is reasonable",
+"example": "Validation is not agreement, it is recognition.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "affirmation",
+"definition": "stating out loud that someone is what they are",
+"example": "Give people a reputation to live up to.",
+"tier": 6,
+"tier_label": "social and warmth"
+},
+{
+"word": "connection",
+"definition": "the sense of being part of each other's life",
+"example": "Connection comes from asking, not from giving.",
+"tier": 6,
+"tier_label": "social and warmth"
+}
+]
+}

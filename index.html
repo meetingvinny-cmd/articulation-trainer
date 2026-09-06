@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Articulation Trainer</title>
+<meta name="description" content="A five minute morning speaking drill. Runs on the phone, keeps everything on the phone.">
+<meta name="theme-color" content="#faf9f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#101215" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Speak">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ INSTALL ============ -->
+  <section id="s-install" hidden>
+    <h1>Add this to your Home Screen</h1>
+    <p class="muted">It works in the browser, but the microphone, offline mode and the icon only behave properly once it is installed.</p>
+    <div class="card stack">
+      <p><b>1.</b> Tap the Share button at the bottom of Safari.</p>
+      <p><b>2.</b> Scroll down and tap <b>Add to Home Screen</b>.</p>
+      <p><b>3.</b> Tap <b>Add</b>, then open it from the new icon.</p>
+    </div>
+    <div class="card stack">
+      <button class="primary" id="install-continue">Continue in the browser</button>
+      <button class="ghost small" id="install-never" style="width:100%">Do not show this again</button>
+    </div>
+  </section>
+
+  <!-- ============ HOME / THIS MORNING ============ -->
+  <section id="s-home" hidden>
+    <div class="topbar">
+      <div><h1>This Morning</h1><div class="muted small" id="home-date"></div></div>
+      <button id="to-settings">Settings</button>
+    </div>
+
+    <div class="card center">
+      <div class="muted small">Day streak</div>
+      <div class="streak" id="home-streak">0</div>
+      <div class="small muted" id="home-streak-note"></div>
+    </div>
+
+    <div class="card">
+      <div class="spread"><h3 style="margin:0">Today</h3><span class="pill" id="home-len">10 min</span></div>
+      <ol class="list" id="home-plan"></ol>
+    </div>
+
+    <div class="card">
+      <h3>Where you are</h3>
+      <div class="row" style="gap:20px">
+        <div><div class="bignum" id="home-mastery">0%</div><div class="small muted">deck mastered</div></div>
+        <div><div class="bignum" id="home-due">0</div><div class="small muted">cards due</div></div>
+        <div><div class="bignum" id="home-cold">-</div><div class="small muted">days since a touch</div></div>
+      </div>
+    </div>
+
+    <div class="footbar"><div class="footbar-inner">
+      <button class="primary huge" id="home-start">Start</button>
+    </div></div>
+  </section>
+
+  <!-- ============ WORDS ============ -->
+  <section id="s-words" hidden>
+    <div class="topbar">
+      <div><h2 style="margin:0">Words</h2><div class="muted small" id="words-progress"></div></div>
+      <button id="words-quit">Skip</button>
+    </div>
+    <div class="card grow">
+      <div class="muted small" id="words-tier"></div>
+      <div class="word" id="words-word">-</div>
+      <div id="words-back" hidden>
+        <div class="def" id="words-def"></div>
+        <div class="ex" id="words-ex"></div>
+      </div>
+      <div id="words-speak" hidden style="margin-top:16px">
+        <div class="muted small">Now say one sentence out loud using it. Out loud, not in your head.</div>
+      </div>
+    </div>
+    <div class="footbar"><div class="footbar-inner" id="words-actions"></div></div>
+  </section>
+
+  <!-- ============ CONNECT ============ -->
+  <section id="s-connect" hidden>
+    <div class="topbar">
+      <div><h2 style="margin:0">Connect</h2><div class="muted small">One person, sixty seconds</div></div>
+      <button id="connect-quit">Skip</button>
+    </div>
+    <div id="connect-empty" hidden class="card stack">
+      <p>No people yet. Add five to ten people you actually want in your life.</p>
+      <button class="primary" id="connect-add-first">Add a person</button>
+    </div>
+    <div id="connect-card" hidden>
+      <div class="card">
+        <div class="spread">
+          <div class="bignum" id="connect-name">-</div>
+          <span class="pill" id="connect-since">-</span>
+        </div>
+        <div class="muted small" id="connect-rel"></div>
+        <hr>
+        <dl class="kv">
+          <dt>They said last time</dt><dd id="connect-said">-</dd>
+          <dt>One ask you can make</dt><dd id="connect-ask">-</dd>
+          <dt>Involve them in</dt><dd id="connect-involve">-</dd>
+          <dt>They own</dt><dd id="connect-owns">-</dd>
+        </dl>
+      </div>
+      <div class="card">
+        <button class="ghost small" id="connect-edit" style="width:100%">Edit this card</button>
+      </div>
+    </div>
+    <div class="footbar"><div class="footbar-inner btnrow">
+      <button id="connect-snooze">Snooze</button>
+      <button class="primary" id="connect-done">Done, log it</button>
+    </div></div>
+  </section>
+
+  <!-- ============ CONNECT LOG ============ -->
+  <section id="s-log" hidden>
+    <div class="topbar"><h2 style="margin:0">Log it</h2><button id="log-cancel">Cancel</button></div>
+    <div class="card stack">
+      <div><label>What they said (one line, their words)</label><input id="log-said" autocomplete="off"></div>
+      <div><label>What they are working on</label><input id="log-working" autocomplete="off"></div>
+      <div><label>What they need</label><input id="log-need" autocomplete="off"></div>
+      <div><label>How</label>
+        <select id="log-channel"><option value="in_person">In person</option><option value="call">Call</option><option value="text">Text</option></select>
+      </div>
+      <button id="log-ask" class="ghost">Did you make the ask? <span id="log-ask-state">No</span></button>
+    </div>
+    <div class="footbar"><div class="footbar-inner"><button class="primary" id="log-save">Save</button></div></div>
+  </section>
+
+  <!-- ============ PEOPLE ============ -->
+  <section id="s-people" hidden>
+    <div class="topbar"><h2 style="margin:0">People</h2><button id="people-back">Back</button></div>
+    <ul class="list card" id="people-list"></ul>
+    <div class="footbar"><div class="footbar-inner"><button class="primary" id="people-add">Add a person</button></div></div>
+  </section>
+
+  <section id="s-person" hidden>
+    <div class="topbar"><h2 style="margin:0" id="person-title">Person</h2><button id="person-cancel">Cancel</button></div>
+    <div class="card stack">
+      <div><label>Name</label><input id="person-name" autocomplete="off"></div>
+      <div><label>Who they are to you</label><input id="person-rel" placeholder="supplier, brother, friend" autocomplete="off"></div>
+      <div><label>They said last time</label><input id="person-said" autocomplete="off"></div>
+      <div><label>One ask you can make</label><input id="person-ask" autocomplete="off"></div>
+      <div><label>Involve them in</label><input id="person-involve" autocomplete="off"></div>
+      <div><label>They own (say it to them out loud)</label><input id="person-owns" autocomplete="off"></div>
+      <button class="danger ghost" id="person-delete" hidden>Delete this person</button>
+    </div>
+    <div class="footbar"><div class="footbar-inner"><button class="primary" id="person-save">Save</button></div></div>
+  </section>
+
+  <!-- ============ DONE ============ -->
+  <section id="s-done" hidden>
+    <div class="center" style="margin-top:20px">
+      <div class="muted small">Day streak</div>
+      <div class="streak" id="done-streak">0</div>
+    </div>
+    <div class="card">
+      <h3>This morning</h3>
+      <div class="row" style="gap:20px" id="done-numbers"></div>
+    </div>
+    <div class="card"><p id="done-feedback" style="margin:0"></p></div>
+    <div class="footbar"><div class="footbar-inner"><button class="primary" id="done-close">Close</button></div></div>
+  </section>
+
+  <!-- ============ SETTINGS ============ -->
+  <section id="s-settings" hidden>
+    <div class="topbar"><h2 style="margin:0">Settings</h2><button id="settings-back">Back</button></div>
+
+    <div class="card stack">
+      <h3>Data</h3>
+      <div class="bar"><span id="storage-bar" style="width:0%"></span></div>
+      <div class="small muted" id="storage-note">-</div>
+      <button id="export-btn">Export a backup</button>
+      <button id="import-btn">Restore from a backup</button>
+      <input type="file" id="import-file" accept="application/json,.json" hidden>
+      <button id="prune-btn" class="ghost">Clear old recordings</button>
+    </div>
+
+    <div class="card stack">
+      <h3>Decks</h3>
+      <button id="deck-va" class="ghost">Verbal Advantage deck: <span id="deck-va-state">off</span></button>
+      <div class="small muted" id="deck-counts"></div>
+    </div>
+
+    <div class="card stack">
+      <h3>People</h3>
+      <button id="settings-people">Manage people</button>
+    </div>
+
+    <div class="card stack">
+      <h3>App</h3>
+      <div class="small muted" id="about-note"></div>
+      <button id="settings-reset" class="danger ghost">Erase everything on this device</button>
+    </div>
+  </section>
+
+</div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

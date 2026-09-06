@@ -1,0 +1,292 @@
+{
+"deck_id": "verbal_advantage",
+"deck_name": "Verbal Advantage",
+"version": 1,
+"headword_source_url": "https://www.learnthat.org/word_lists/view/3927",
+"headword_source_note": "HEADWORDS ONLY, taken from the public LearnThat.org word list titled 'Verbal Advantage Word List' (retrieved 2026-09-06). The list is a study list associated with Charles Harrington Elster's 'Verbal Advantage: Ten Easy Steps to a Powerful Vocabulary'. No text from the book is reproduced here.",
+"definitions_note": "Every definition and every example sentence in this file was written for this app by automation-builder on 2026-09-06. Nothing is copied from the book.",
+"coverage_gap": "The book teaches 500 keywords across 10 levels. Only 40 headwords were retrievable from a citable public list on 2026-09-06 (learnthat.org lists 3927 and 25322 are the same 40 words; essentialenglish.review renders its per-level word pages in JavaScript and returns no words to a plain fetch). The remaining 460 headwords are NOT in this file and are NOT guessed. See the re-import hook in README.md.",
+"reimport_hook": "Drop the book in File Dump and run scripts/import_verbal_advantage.py to extract headwords only; the script then prints the words that still need our own definition and example.",
+"cards": [
+{
+"word": "paraphrase",
+"definition": "say the same thing in your own words",
+"example": "Paraphrase what she said back to her before you answer.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "ostensible",
+"definition": "the stated reason, probably not the real one",
+"example": "His ostensible reason was the invoice, the real one was the reorder.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "digress",
+"definition": "wander off the point",
+"example": "I digress every time I talk without a structure.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "uncanny",
+"definition": "strange in a way that is hard to explain",
+"example": "His timing on that call was uncanny.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "candor",
+"definition": "open honesty even when it costs you",
+"example": "I appreciated the candor more than the answer.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "morose",
+"definition": "gloomy and withdrawn",
+"example": "Tight money makes me morose and people feel it.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "adept",
+"definition": "skilled at something through practice",
+"example": "He is adept at freight, so I defer to him.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "saturated",
+"definition": "completely full, can absorb no more",
+"example": "That category is saturated, there is no room for another me.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "pragmatic",
+"definition": "chooses what works over what is ideal",
+"example": "The pragmatic move is to ship half and wait.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "congenial",
+"definition": "pleasant and easy to be around",
+"example": "He is congenial, which is why the supplier calls go well.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "quote",
+"definition": "repeat someone's exact words, or state a price",
+"example": "Quote me the DDP number, not the EXW number.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "plausible",
+"definition": "believable on its face",
+"example": "Plausible is not the same as true.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "specious",
+"definition": "looks right but is actually false",
+"example": "That margin math is specious, it ignores the ad spend.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "ingress",
+"definition": "the way in",
+"example": "The ingress to the warehouse is on the north side.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "egress",
+"definition": "the way out",
+"example": "Every deal needs a defined egress before you sign.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "straightforward",
+"definition": "simple and direct, no tricks",
+"example": "Give me a straightforward answer on the ship date.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "outspoken",
+"definition": "says what they think in public",
+"example": "She is outspoken, which is useful and occasionally expensive.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "forthright",
+"definition": "says it straight without hedging",
+"example": "Be forthright about the money instead of hinting at it.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "ingenuous",
+"definition": "innocently honest, no hidden angle",
+"example": "His ingenuous question exposed the whole problem.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "dolorous",
+"definition": "full of sorrow",
+"example": "Do not send a dolorous follow up email, send a clear one.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "lugubrious",
+"definition": "exaggeratedly gloomy, almost comic about it",
+"example": "His lugubrious update made a two day delay sound fatal.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "saturnine",
+"definition": "gloomy and slow to warm",
+"example": "He is saturnine on the phone and fine in person.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "optimistic",
+"definition": "expects things to go well",
+"example": "Optimistic forecasts are how inventory dies.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "jovial",
+"definition": "cheerful and friendly",
+"example": "The jovial version of me closes more than the careful one.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "sanguine",
+"definition": "calmly confident that it will work out",
+"example": "I am sanguine about the quarter, not about the week.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "sullen",
+"definition": "silently resentful",
+"example": "I went sullen instead of saying what I wanted.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "misanthropy",
+"definition": "a general dislike of people",
+"example": "Burnout looks a lot like misanthropy from the outside.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "deft",
+"definition": "quick and skillful with a light touch",
+"example": "That was a deft way to say no.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "adroit",
+"definition": "clever and skillful, especially socially",
+"example": "He is adroit at changing the subject.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "dexterous",
+"definition": "skillful with the hands, or with a tricky situation",
+"example": "A dexterous answer got him out of the corner.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "proficient",
+"definition": "good enough to do the job well",
+"example": "I am proficient at PPC, I am not expert.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "drenched",
+"definition": "completely soaked",
+"example": "I came back from the trail walk drenched.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "steeped",
+"definition": "soaked in something long enough to take on its character",
+"example": "He is steeped in this category, twenty years of it.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "permeated",
+"definition": "spread through every part of something",
+"example": "The doubt permeated the whole conversation.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "impregnated",
+"definition": "filled through and through with something",
+"example": "The cloth is impregnated with the coating, not sprayed.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "imbue",
+"definition": "fill something with a quality",
+"example": "Imbue the listing with the reason it exists, not just specs.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "sodden",
+"definition": "heavy and soaked with liquid",
+"example": "The carton was sodden when it landed.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "alien",
+"definition": "completely foreign to how you normally are",
+"example": "Saying no felt alien, which is exactly the problem.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "dissident",
+"definition": "someone who openly disagrees with the group",
+"example": "Every good board needs one dissident.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+},
+{
+"word": "incongruous",
+"definition": "does not fit with what is around it",
+"example": "A premium price on a cheap photo is incongruous.",
+"tier": 1,
+"tier_label": "verbal advantage level 1"
+}
+]
+}
