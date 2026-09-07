@@ -26,14 +26,17 @@ Weekends are the same, just earlier.
 
 ## The five modes
 
-1. **Shadow.** A voice reads one sentence. You repeat it. You hear the model and yourself
-   back to back. It ends with a cold read of the whole passage. Hands free by default, so
-   in the car you never touch it.
+1. **Shadow.** A voice reads one line of a real scenario. You repeat it. You hear the
+   model and yourself back to back. It ends with a cold read of the whole thing. Hands
+   free by default, so in the car you never touch it. Tap **Scenarios** to pick the group
+   first, coffee with her, coworkers, cafe, networking, or Podcast style, then the
+   scenario. The old general passages are still there under **More passages**.
 2. **Words.** Ten cards. Say what it means out loud, tap to check, then **say it in a
    sentence**. A word you know but cannot use in a sentence goes back a box on purpose.
 3. **Frame.** A prompt, a structure, thirty seconds to fill three beats, then one minute
    of talking with the beats on screen. Tap each beat as you hit it. The training is the
-   thirty seconds, not the minute.
+   thirty seconds, not the minute. The prompt comes from a scenario by default; the button
+   beside it changes which group. After the take you get that scenario's do nots.
 4. **Clear.** Three takes on one topic. Take 1 is you. Take 2 adds pause instead of um.
    Take 3 adds one idea per sentence. You see the difference as numbers.
 5. **Connect.** One person card before a real conversation: what they said last time, one

@@ -16,6 +16,8 @@ Usage
     python3 scripts/render_passages.py --dry-run      # show the plan, spend nothing
     python3 scripts/render_passages.py                # render what is missing
     python3 scripts/render_passages.py --force t01    # re-render one passage
+    python3 scripts/render_passages.py --data data/scenarios.json --level sentence \
+        --budget 9500 --ids sc01 sc02 ...            # render the scenario pack
 """
 
 import argparse
@@ -29,6 +31,7 @@ import urllib.request
 
 APP_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEXTS = os.path.join(APP_DIR, "data", "texts.json")
+SCENARIOS = os.path.join(APP_DIR, "data", "scenarios.json")
 AUDIO_DIR = os.path.join(APP_DIR, "audio")
 ENV_PATHS = [
     os.path.expanduser("~/Documents/Claude/.env"),
@@ -103,19 +106,37 @@ def main():
     ap.add_argument("--force", nargs="*", default=[], help="passage ids to re-render even if the mp3 exists")
     ap.add_argument("--level", choices=["passage", "sentence", "both"], default="both",
                     help="passage = one mp3 per passage, sentence = one mp3 per sentence (what Shadow plays)")
+    ap.add_argument("--data", default=TEXTS,
+                    help="which data file to render. data/texts.json is the generic passage bank, "
+                         "data/scenarios.json is the scenario and monologue pack.")
+    ap.add_argument("--ids", nargs="*", default=None,
+                    help="render only these ids, in this order. Everything else is left for the phone voice.")
     args = ap.parse_args()
 
-    data = json.load(open(TEXTS, encoding="utf-8"))
+    data_path = args.data
+    if not os.path.isabs(data_path):
+        cand = os.path.join(APP_DIR, data_path)
+        data_path = cand if os.path.exists(cand) else os.path.abspath(data_path)
+    data = json.load(open(data_path, encoding="utf-8"))
     os.makedirs(AUDIO_DIR, exist_ok=True)
 
+    rows = data["texts"]
+    if args.ids:
+        by_id = {t["id"]: t for t in rows}
+        missing = [i for i in args.ids if i not in by_id]
+        if missing:
+            sys.exit("Unknown ids in --ids: %s" % missing)
+        rows = [by_id[i] for i in args.ids]
+
     plan, skipped = [], []
-    for t in data["texts"]:
+    for t in rows:
         h = hashlib.sha256(t["body"].encode("utf-8")).hexdigest()[:16]
         if h != t.get("hash"):
-            print("  hash drift on %s, texts.json says %s, the text hashes to %s. Fixing in place."
-                  % (t["id"], t.get("hash"), h))
+            print("  hash drift on %s, %s says %s, the text hashes to %s. Fixing in place."
+                  % (t["id"], os.path.basename(data_path), t.get("hash"), h))
             t["hash"] = h
-            t["audio"] = "audio/%s.mp3" % h
+            if args.level in ("passage", "both"):
+                t["audio"] = "audio/%s.mp3" % h
 
         if args.level in ("passage", "both"):
             out = os.path.join(AUDIO_DIR, h + ".mp3")
@@ -138,7 +159,8 @@ def main():
             t["sentence_audio"] = paths
 
     chars = sum(len(b) for _, _, b, _, _ in plan)
-    print("Passages on file: %d. Already rendered: %d. To render: %d." % (len(data["texts"]), len(skipped), len(plan)))
+    print("Passages in this run: %d of %d on file. Already rendered: %d. To render: %d."
+          % (len(rows), len(data["texts"]), len(skipped), len(plan)))
     print("Characters this run: %d. Budget: %d. Model: %s." % (chars, args.budget, MODEL))
     if chars > args.budget:
         sys.exit("Refusing to run: %d characters is over the %d budget. Raise --budget deliberately or cut passages."
@@ -185,7 +207,7 @@ def main():
         else:
             print("  FAILED %s after 3 attempts, leaving it for the phone voice fallback." % pid)
 
-    json.dump(data, open(TEXTS, "w", encoding="utf-8"), indent=0, ensure_ascii=True)
+    json.dump(data, open(data_path, "w", encoding="utf-8"), indent=1, ensure_ascii=True)
     print("Rendered %d of %d. Every passage without an mp3 falls back to the phone voice at run time."
           % (ok, len(plan)))
 

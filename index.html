@@ -80,7 +80,8 @@
     <div id="shadow-intro" class="card stack">
       <div class="muted small" id="shadow-title">-</div>
       <p id="shadow-preview" class="small muted" style="max-height:120px;overflow:auto"></p>
-      <button class="ghost small" id="shadow-change" style="width:100%">Different passage</button>
+      <div class="small muted" id="shadow-group">-</div>
+      <button class="ghost small" id="shadow-change" style="width:100%">Scenarios</button>
       <button class="ghost small" id="shadow-paste" style="width:100%">Paste my own text</button>
       <div class="row" style="justify-content:space-between">
         <span class="small muted">Hands free, for the car</span>
@@ -116,8 +117,9 @@
 
   <!-- ============ PICK PASSAGE ============ -->
   <section id="s-pick" hidden>
-    <div class="topbar"><h2 style="margin:0">Pick a passage</h2><button id="pick-cancel">Cancel</button></div>
-    <ul class="list card" id="pick-list"></ul>
+    <div class="topbar"><h2 style="margin:0" id="pick-head">Scenarios</h2><button id="pick-cancel">Cancel</button></div>
+    <ul class="list card" id="pick-groups"></ul>
+    <ul class="list card" id="pick-list" hidden></ul>
   </section>
 
 
@@ -129,8 +131,10 @@
     </div>
 
     <div class="card">
-      <h3>The prompt</h3>
-      <p id="frame-prompt" style="font-size:19px;margin:0">-</p>
+      <div class="spread"><h3 style="margin:0">The prompt</h3>
+        <button class="small" id="frame-group" style="width:auto">Scenarios</button></div>
+      <div class="small muted" id="frame-scenario"></div>
+      <p id="frame-prompt" style="font-size:19px;margin:8px 0 0">-</p>
     </div>
 
     <div class="card" id="frame-beats-card">
@@ -145,6 +149,12 @@
     </div>
 
     <div class="footbar"><div class="footbar-inner" id="frame-actions"></div></div>
+  </section>
+
+  <!-- ============ FRAME PROMPT GROUP ============ -->
+  <section id="s-fgroup" hidden>
+    <div class="topbar"><h2 style="margin:0">Which prompts</h2><button id="fgroup-cancel">Cancel</button></div>
+    <ul class="list card" id="fgroup-list"></ul>
   </section>
 
   <!-- ============ CLEAR ============ -->
@@ -354,6 +364,10 @@
       <div class="row" style="gap:20px" id="done-numbers"></div>
     </div>
     <div class="card"><p id="done-feedback" style="margin:0"></p></div>
+    <div class="card" id="done-donts-card" hidden>
+      <h3 id="done-donts-head">Do not</h3>
+      <ul class="list" id="done-donts"></ul>
+    </div>
     <div class="card"><button class="ghost small" id="done-progress" style="width:100%">See the trend</button></div>
     <div class="footbar"><div class="footbar-inner"><button class="primary" id="done-close">Close</button></div></div>
   </section>

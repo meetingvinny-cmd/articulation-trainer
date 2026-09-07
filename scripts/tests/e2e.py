@@ -79,8 +79,99 @@ def main():
                     texts: await a.db.count('texts'), steps: Object.keys(a.STEPS)};
         }""")
         check("340 word cards seeded", counts["words"] == 340, counts["words"])
-        check("150 prompts seeded", counts["prompts"] == 150, counts["prompts"])
-        check("20 passages seeded", counts["texts"] == 20, counts["texts"])
+        check("150 generic prompts plus 17 scenario frame prompts seeded",
+              counts["prompts"] == 167, counts["prompts"])
+        check("20 generic passages plus the 23 scenario rows seeded", counts["texts"] == 43, counts["texts"])
+
+        print("\n== M5 scenario packs ==")
+        scen = page.evaluate("""async () => {
+            const a = window.__artic;
+            const texts = await a.db.all('texts');
+            const prompts = await a.db.all('prompts');
+            const groups = await a.db.setting('scenario_groups', []);
+            const structures = await a.db.setting('structures', []);
+            const scen = texts.filter(t => t.kind === 'scenario');
+            const mono = texts.filter(t => t.kind === 'monologue');
+            const sp = prompts.filter(p => p.scenario_id);
+            const blob = JSON.stringify({texts, prompts});
+            return {
+              scenarios: scen.length, monologues: mono.length,
+              groups: groups.map(g => g.id),
+              groupLabels: [...new Set(texts.map(t => t.group_label))].sort(),
+              ungrouped: texts.filter(t => !t.group).length,
+              linesPerScenario: [...new Set(scen.map(s => s.sentences.length > 0))],
+              withAudio: scen.filter(s => (s.sentence_audio||[]).length === s.sentences.length).length,
+              monoWithAudio: mono.filter(m => (m.sentence_audio||[]).length === m.sentences.length).length,
+              scenPrompts: sp.length,
+              promptsWithDonts: sp.filter(p => (p.donts||[]).length > 0).length,
+              genericGrouped: prompts.filter(p => !p.scenario_id && p.group === 'more').length,
+              structureIds: structures.map(x => x.id),
+              defaultPass: (await a.pickPassage()),
+              framePrompt: (await a.pickFramePrompt()),
+              // The two name tokens that must never ship. Assembled from char
+              // codes so this guard does not itself put a name in a public repo.
+              leak: [[65,112,114,105,108],[86,105,110,104]]
+                      .map(c => String.fromCharCode(...c))
+                      .some(t => new RegExp('\\b' + t + '(?!y)').test(blob))
+            };
+        }""")
+        check("17 scenarios and 6 monologues loaded",
+              scen["scenarios"] == 17 and scen["monologues"] == 6, (scen["scenarios"], scen["monologues"]))
+        check("every text row carries a group, none left ungrouped", scen["ungrouped"] == 0, scen["ungrouped"])
+        check("the group labels are the five packs plus More passages",
+              set(scen["groupLabels"]) == {"coffee with her", "coworkers", "cafe", "networking",
+                                           "Podcast style", "More passages"}, scen["groupLabels"])
+        check("no real first name shipped in the data", scen["leak"] is False, scen["leak"])
+        check("all 17 scenarios have a full set of rendered sentence clips",
+              scen["withAudio"] == 17, scen["withAudio"])
+        check("5 of the 6 monologues have rendered clips, the sixth falls back to the phone voice",
+              scen["monoWithAudio"] == 5, scen["monoWithAudio"])
+        check("17 scenario frame prompts joined the prompt bank",
+              scen["scenPrompts"] == 17, scen["scenPrompts"])
+        check("11 of them carry three DON'Ts", scen["promptsWithDonts"] == 11, scen["promptsWithDonts"])
+        check("the 150 generic prompts were labelled More prompts",
+              scen["genericGrouped"] == 150, scen["genericGrouped"])
+        check("the two scenario structures were seeded",
+              "point_why_ask" in scen["structureIds"] and "point_why_tease" in scen["structureIds"],
+              scen["structureIds"][:3])
+        check("the Shadow weekday default is a scenario, not a generic passage",
+              scen["defaultPass"]["kind"] in ("scenario", "monologue"),
+              (scen["defaultPass"]["id"], scen["defaultPass"]["kind"]))
+        check("the Frame default draws from the scenario prompts",
+              bool(scen["framePrompt"].get("scenario_id")), scen["framePrompt"].get("id"))
+
+        print("\n== the scenario picker renders ==")
+        picker = page.evaluate("""async () => {
+            const a = window.__artic;
+            const $=id=>document.getElementById(id);
+            const vis=()=>[...document.querySelectorAll('section')].filter(s=>!s.hidden).map(s=>s.id)[0];
+            await a.openPick();
+            const groups = [...document.querySelectorAll('.pick-grp')].map(el => el.querySelector('b').textContent);
+            const onGroups = vis()==='s-pick' && !$('pick-groups').hidden && $('pick-list').hidden;
+            document.querySelector('.pick-grp').click();
+            await new Promise(r=>setTimeout(r,200));
+            const rows = [...document.querySelectorAll('.pick-row')].map(el => el.querySelector('b').textContent);
+            const head = $('pick-head').textContent, back = $('pick-cancel').textContent;
+            // and the group picker for Frame
+            await a.openFrameGroup();
+            const fgroups = [...document.querySelectorAll('.fgroup-row')].map(el => el.querySelector('b').textContent);
+            const fvis = vis();
+            a.show('home');
+            return {groups, onGroups, rows, head, back, fgroups, fvis};
+        }""")
+        check("the picker lists the groups first, scenarios first, More passages last",
+              picker["onGroups"] and picker["groups"][0] == "coffee with her"
+              and picker["groups"][-1] == "More passages", picker["groups"])
+        check("picking a group lists its scenarios and the header becomes the group name",
+              len(picker["rows"]) == 6 and picker["head"] == "coffee with her"
+              and picker["back"] == "Back", (picker["head"], len(picker["rows"])))
+        banned = ["".join(map(chr, c)) for c in ([65, 112, 114, 105, 108], [86, 105, 110, 104])]
+        check("the picker never shows a real first name",
+              not any(b in r for r in picker["rows"] + picker["groups"] for b in banned),
+              picker["rows"][:2])
+        check("Frame has its own prompt group picker",
+              picker["fvis"] == "s-fgroup" and picker["fgroups"][0].startswith("Scenarios")
+              and picker["fgroups"][-1] == "More prompts", picker["fgroups"])
 
         print("\n== pure logic ==")
         logic = page.evaluate("""async () => {
@@ -118,17 +209,24 @@ def main():
         print("\n== audio assets ==")
         audio = page.evaluate("""async () => {
             const a = window.__artic;
+            // mo06 was deliberately left unrendered when the character budget ran
+            // out, so the rule is: every row that HAS clips has one per sentence,
+            // and a row with none falls back to the phone voice.
             const texts = (await a.db.all('texts')).filter(t=>t.source_type!=='own_paste');
-            const matched = texts.every(t => (t.sentence_audio||[]).length === t.sentences.length);
+            const matched = texts.every(t => (t.sentence_audio||[]).length === 0
+                                          || (t.sentence_audio||[]).length === t.sentences.length);
+            const noAudio = texts.filter(t => (t.sentence_audio||[]).length === 0).map(t=>t.id);
             const t = texts.find(x=>x.id==='t01');
             const out=[];
             for (const p of t.sentence_audio.concat([t.audio])) {
                 const r = await fetch(p, {method:'HEAD'});
                 out.push([r.status, r.headers.get('content-type')]);
             }
-            return {matched, heads: out, total: texts.reduce((n,t)=>n+(t.sentence_audio||[]).length,0)};
+            return {matched, noAudio, heads: out, total: texts.reduce((n,t)=>n+(t.sentence_audio||[]).length,0)};
         }""")
-        check("every passage has one mp3 per sentence", audio["matched"], audio["total"])
+        check("every rendered passage has one mp3 per sentence", audio["matched"], audio["total"])
+        check("only the one budget casualty falls back to the phone voice",
+              audio["noAudio"] == ["mo06"], audio["noAudio"])
         # GitHub Pages labels mp3 as audio/mp3, a local python server says audio/mpeg.
         # Both are mp3 and every browser plays both, so accept either.
         check("sentence and passage mp3 all return 200 and an mp3 content type",
@@ -147,7 +245,13 @@ def main():
             await a.db.put('sessions', sess);
             $('home-start').click(); await w(400);
             let guard=0;
-            while (vis()!=='s-words' && guard++<40) { if($('shadow-quit')&&vis()==='s-shadow'){$('shadow-quit').click();} await w(200); }
+            // the weekday rotation decides which drill comes first, so skip
+            // whichever one is on screen rather than assuming it is Shadow
+            const QUIT={'s-shadow':'shadow-quit','s-frame':'frame-quit','s-clear':'clear-quit'};
+            while (vis()!=='s-words' && guard++<40) {
+                const q=QUIT[vis()]; if(q && $(q)) $(q).click();
+                await w(200);
+            }
             if (vis()!=='s-words') return {reached:false, at:vis()};
             let done=0;
             for (let i=0;i<10 && vis()==='s-words';i++){
@@ -164,7 +268,7 @@ def main():
         check("10 cards recorded, boxes moved, due dates set",
               words.get("seen") == 10 and len(words.get("dues", [])) >= 1, words)
 
-        print("\n== shadow session, hands free, real recording ==")
+        print("\n== shadow session on a SCENARIO, hands free, real recording ==")
         page.evaluate("""async () => {
             const a=window.__artic;
             await a.db.clear('reps'); await a.db.clear('clips');
@@ -176,12 +280,14 @@ def main():
             const vis=()=>[...document.querySelectorAll('section')].filter(s=>!s.hidden).map(s=>s.id)[0];
             if (vis()!=='s-shadow') { a.STEPS.shadow.run(); }
             await new Promise(r=>setTimeout(r,600));
-            // shortest passage so the harness does not take five minutes
-            const texts = await a.db.all('texts');
+            // shortest SCENARIO so the harness does not take five minutes, and so
+            // this is a scenario run, which is what M5 has to prove
+            const texts = (await a.db.all('texts')).filter(t=>t.kind==='scenario');
             texts.sort((x,y)=>x.body.length-y.body.length);
             a.sh.text = texts[0];
             window.__shadowTitle = texts[0].title;
             window.__shadowSentences = texts[0].sentences.length;
+            window.__shadowGroup = texts[0].group;
         }""")
         page.evaluate("() => { const a=window.__artic; document.getElementById('shadow-intro').hidden=false; }")
         page.evaluate("() => { const b=document.getElementById('sh-go'); if(b) b.click(); }")
@@ -218,6 +324,30 @@ def main():
         check("clips are stored with the container the browser actually gave us",
               len(shadow["clips"]) > 0 and all(c["mime"] and c["bytes"] > 800 for c in shadow["clips"]),
               [(c["mime"], c["bytes"]) for c in shadow["clips"]])
+
+        scenrun = page.evaluate("""async () => {
+            const a=window.__artic;
+            const reps=(await a.db.all('reps')).filter(r=>r.mode==='shadow' && r.notes!=='cold read' && r.target_text);
+            const s=a.session();
+            return {kind: a.sh.text.kind, group: a.sh.text.group, title: a.sh.text.title,
+                    lines: a.sh.text.sentences.length, allLines: a.sh.text.sentences,
+                    repTargets: reps.map(r=>r.target_text),
+                    sessionScenarios: s ? (s.scenarios||[]) : null,
+                    sessionGroup: s ? s.scenario_group : null, sessionName: s ? s.scenario_name : null};
+        }""")
+        check("the run was a scenario and each of HIS lines was drilled one at a time",
+              scenrun["kind"] == "scenario"
+              and len(scenrun["repTargets"]) == scenrun["lines"]
+              and set(scenrun["repTargets"]) == set(scenrun["allLines"]),
+              (scenrun["lines"], scenrun["repTargets"]))
+        check("the session log carries the group and the scenario name",
+              scenrun["sessionGroup"] == scenrun["group"] and scenrun["sessionName"] == scenrun["title"]
+              and any(x["mode"] == "shadow" for x in (scenrun["sessionScenarios"] or [])),
+              (scenrun["sessionGroup"], scenrun["sessionName"]))
+        check("the scenario group logged is a label, never a person's name",
+              all(b not in str(scenrun["sessionGroup"]) for b in
+                  ["".join(map(chr, c)) for c in ([65, 112, 114, 105, 108], [86, 105, 110, 104])]),
+              scenrun["sessionGroup"])
 
 
         print("\n== scoring, pure functions ==")
@@ -323,6 +453,54 @@ def main():
               frame.get("r") and frame["r"]["dur"] and frame["r"]["dur"] >= 3.0, frame["r"]["dur"] if frame.get("r") else None)
         check("the typed beats are stored with the rep",
               frame["r"] and "beat0" in (frame["r"]["beats"] or ""), frame["r"]["beats"] if frame.get("r") else None)
+
+        print("\n== frame on a scenario, the DON'Ts land on the done screen ==")
+        fdonts = page.evaluate("""async () => {
+            const $=id=>document.getElementById(id);
+            const vis=()=>[...document.querySelectorAll('section')].filter(s=>!s.hidden).map(s=>s.id)[0];
+            const w=ms=>new Promise(r=>setTimeout(r,ms));
+            const a=window.__artic;
+            await a.db.setSetting('frame_beats_seconds', 2);
+            await a.db.setSetting('frame_speak_seconds', 3);
+            await a.db.setSetting('frame_rounds', 1);
+            await a.db.setSetting('frame_group', 'coworkers');   // this pack ships DON'Ts
+            await a.db.clear('reps');
+            a.STEPS.frame.run(); await w(700);
+            if (vis()!=='s-frame') return {reached:false, at:vis()};
+            const shown = {group: $('frame-group').textContent, scenario: $('frame-scenario').textContent,
+                           prompt: $('frame-prompt').textContent};
+            const p = a.fr.prompt;
+            $('fr-speak').click(); await w(300);
+            const QUIT={'s-shadow':'shadow-quit','s-frame':'frame-quit','s-clear':'clear-quit',
+                        's-words':'words-quit','s-connect':'connect-quit'};
+            let guard=0;
+            while (vis()!=='s-done' && guard++<80) {
+                await w(250);
+                // the frame take must finish on its own; only skip the LATER steps
+                if (vis()!=='s-frame') { const q=QUIT[vis()]; if(q && $(q)) $(q).click(); }
+            }
+            const s=a.session();
+            return {reached:true, shown, at:vis(),
+                    promptGroup:p.group, promptScenario:p.scenario, donts:(p.donts||[]).length,
+                    cardShown: !$('done-donts-card').hidden,
+                    head: $('done-donts-head').textContent,
+                    listed: [...document.querySelectorAll('#done-donts li')].map(li=>li.textContent),
+                    sessionFrame: s ? (s.scenarios||[]).filter(x=>x.mode==='frame') : null};
+        }""")
+        check("frame drew a coworkers scenario prompt and named the scenario on screen",
+              fdonts.get("reached") and fdonts["promptGroup"] == "coworkers"
+              and fdonts["shown"]["group"] == "coworkers"
+              and fdonts["promptScenario"] in fdonts["shown"]["scenario"], fdonts.get("shown"))
+        check("after the take the app is on the done screen", fdonts.get("at") == "s-done", fdonts.get("at"))
+        check("the done screen shows that scenario's three DON'Ts",
+              fdonts.get("cardShown") and len(fdonts.get("listed", [])) == 3
+              and len(fdonts["listed"]) == fdonts["donts"], fdonts.get("listed"))
+        check("the DON'Ts card names the scenario it came from",
+              fdonts.get("promptScenario", "") in fdonts.get("head", ""), fdonts.get("head"))
+        check("the session log carries the frame scenario too",
+              fdonts.get("sessionFrame") and fdonts["sessionFrame"][-1]["group"] == "coworkers"
+              and fdonts["sessionFrame"][-1]["name"] == fdonts["promptScenario"],
+              fdonts.get("sessionFrame"))
 
         print("\n== clear mode, three takes, no dictation available ==")
         clear = page.evaluate("""async () => {

@@ -1,65 +1,85 @@
 {
-"version": 1,
-"structures": [
-{
-"id": "point_reason_example",
-"name": "Point, Reason, Example",
-"use": "opinions",
-"beats": [
-"Point",
-"Reason",
-"Example"
-]
-},
-{
-"id": "what_so_what_now_what",
-"name": "What, So What, Now What",
-"use": "updates and status",
-"beats": [
-"What happened",
-"Why it matters",
-"What happens next"
-]
-},
-{
-"id": "problem_solution_benefit",
-"name": "Problem, Solution, Benefit",
-"use": "pitches and asks",
-"beats": [
-"Problem",
-"Solution",
-"Benefit"
-]
-},
-{
-"id": "past_present_future",
-"name": "Past, Present, Future",
-"use": "stories about yourself",
-"beats": [
-"Past",
-"Present",
-"Future"
-]
-},
-{
-"id": "scqa",
-"name": "Situation, Complication, Question, Answer",
-"use": "anything ending in a decision",
-"beats": [
-"Situation",
-"Complication",
-"Question and answer"
-]
-},
-{
-"id": "yes_because_therefore",
-"name": "Yes, Because, Therefore",
-"use": "answering a direct question without wandering",
-"beats": [
-"Yes or no",
-"Because",
-"Therefore"
-]
-}
-]
+ "version": 2,
+ "structures": [
+  {
+   "id": "point_why_tease",
+   "name": "Point, Why, Tease",
+   "use": "real conversations, when you want to hold the frame",
+   "beats": [
+    "Point",
+    "Why",
+    "Tease"
+   ]
+  },
+  {
+   "id": "point_why_ask",
+   "name": "Point, Why, Ask",
+   "use": "real conversations, when you want them to keep talking",
+   "beats": [
+    "Point",
+    "Why",
+    "Ask"
+   ]
+  },
+  {
+   "id": "point_reason_example",
+   "name": "Point, Reason, Example",
+   "use": "opinions",
+   "beats": [
+    "Point",
+    "Reason",
+    "Example"
+   ]
+  },
+  {
+   "id": "what_so_what_now_what",
+   "name": "What, So What, Now What",
+   "use": "updates and status",
+   "beats": [
+    "What happened",
+    "Why it matters",
+    "What happens next"
+   ]
+  },
+  {
+   "id": "problem_solution_benefit",
+   "name": "Problem, Solution, Benefit",
+   "use": "pitches and asks",
+   "beats": [
+    "Problem",
+    "Solution",
+    "Benefit"
+   ]
+  },
+  {
+   "id": "past_present_future",
+   "name": "Past, Present, Future",
+   "use": "stories about yourself",
+   "beats": [
+    "Past",
+    "Present",
+    "Future"
+   ]
+  },
+  {
+   "id": "scqa",
+   "name": "Situation, Complication, Question, Answer",
+   "use": "anything ending in a decision",
+   "beats": [
+    "Situation",
+    "Complication",
+    "Question and answer"
+   ]
+  },
+  {
+   "id": "yes_because_therefore",
+   "name": "Yes, Because, Therefore",
+   "use": "answering a direct question without wandering",
+   "beats": [
+    "Yes or no",
+    "Because",
+    "Therefore"
+   ]
+  }
+ ]
 }

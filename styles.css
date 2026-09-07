@@ -107,3 +107,6 @@ label{display:block; font-size:13px; color:var(--muted); margin:0 0 4px}
 .warnc{color:var(--warn)}
 .scrollx{overflow-x:auto}
 hr{border:0; border-top:1px solid var(--line); margin:16px 0}
+
+/* M5: the prompt group in use */
+.fgroup-row.on b{color:var(--accent)}

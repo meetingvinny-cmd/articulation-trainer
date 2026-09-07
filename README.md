@@ -74,13 +74,31 @@ never touches this repo. Nothing personal is ever committed here.
     data/words.json         the authored Core 300 deck
     data/words_va.json      the Verbal Advantage deck (headwords only, our own text)
     data/prompts.json       150 speaking prompts
-    data/texts.json         20 shadowing passages
-    data/structures.json    the 6 thought structures
+    data/texts.json         20 generic shadowing passages
+    data/scenarios.json     the M5 packs: 17 real scenarios and 6 podcast style monologues
+    data/structures.json    the 8 thought structures
     audio/                  pre rendered mp3 of each passage (M2)
     scripts/                Mac side build tools, never shipped to the browser
     scripts/render_passages.py   ElevenLabs pre render, key read from .env at run time
-    scripts/tests/e2e.py         67 check headless harness, fake mic, muted audio
+    scripts/tests/e2e.py         95 check headless harness, fake mic, muted audio
     HOW_TO.md               the one page how to
+
+## Scenario packs
+
+`data/scenarios.json` is the content the app actually teaches. It is texts.json
+shaped, so Shadow plays it with no new mode and no new loop, plus four fields:
+
+    kind          scenario or monologue
+    group         coffee, coworkers, cafe, networking, podcast
+    frame_prompt  what Frame asks, joined to the prompt bank as its own group
+    donts         the three things not to do, shown after the Frame take
+
+Shadow opens on a scenario, not a generic passage. The generic 20 are still
+bundled, grouped under **More passages**, one tap away. In Frame the default
+prompt group is Scenarios, changeable from the button beside the prompt.
+
+Group labels are labels. No person is ever named in this repo, in the data, or
+on screen.
 
 ## Data model
 

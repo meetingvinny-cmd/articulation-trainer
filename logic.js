@@ -9,6 +9,11 @@ export const MASTERY_BOX = 4;      // box 4 or 5 counts as mastered
 export const CLIP_RETENTION_DAYS = 14;
 // Bump when data/texts.json gains fields the app needs.
 export const TEXTS_VERSION = 2;
+// Bump when data/scenarios.json changes. M5 shipped version 1.
+export const SCENARIOS_VERSION = 1;
+// Bump when data/structures.json gains a structure. M5 added Point Why Ask
+// and Point Why Tease, which the scenario frame prompts hang off.
+export const STRUCTURES_VERSION = 2;
 
 // ---------- seeding ----------
 
@@ -42,7 +47,7 @@ function cardToRow(deckId, c) {
 // Seeds anything missing. Safe to call on every launch: it never overwrites a
 // card he has already studied, it only adds cards that are not there yet.
 export async function seedIfNeeded() {
-  const report = { words: 0, prompts: 0, texts: 0, structures: 0 };
+  const report = { words: 0, prompts: 0, texts: 0, structures: 0, scenarios: 0, scenario_prompts: 0 };
 
   const haveWords = await db.count('words');
   const seedVersion = await db.setting('seed_version', 0);
@@ -80,10 +85,61 @@ export async function seedIfNeeded() {
     await db.setSetting('texts_version', TEXTS_VERSION);
   }
 
-  if (!(await db.setting('structures'))) {
+  const structVersion = await db.setting('structures_version', 0);
+  if (!(await db.setting('structures')) || structVersion < STRUCTURES_VERSION) {
     const s = await loadJson('data/structures.json');
     await db.setSetting('structures', s.structures);
+    await db.setSetting('structures_version', STRUCTURES_VERSION);
     report.structures = s.structures.length;
+  }
+
+  // ---- M5 scenario packs ----
+  // Scenarios and monologues are texts like any other, so Shadow plays them with
+  // no new mode and no new loop. What they add is a group, a kind, the frame
+  // prompt they came from, and the DON'Ts. The generic bundled passages are not
+  // deleted, they are labelled "More passages" and drop below the scenarios.
+  const scenVersion = await db.setting('scenarios_version', 0);
+  if (scenVersion < SCENARIOS_VERSION) {
+    const pack = await loadJson('data/scenarios.json');
+    const before = await db.all('texts');
+    const used = new Map(before.map(t => [t.id, t.times_used || 0]));
+
+    await db.putAll('texts', pack.texts.map(t => ({ ...t, times_used: used.get(t.id) || 0 })));
+
+    // label everything that came before so the picker has no ungrouped rows
+    const packIds = new Set(pack.texts.map(t => t.id));
+    const older = before.filter(t => !packIds.has(t.id) && !t.group);
+    if (older.length) {
+      await db.putAll('texts', older.map(t => ({
+        ...t,
+        kind: t.kind || 'passage',
+        group: t.source_type === 'own_paste' ? 'mine' : 'more',
+        group_label: t.source_type === 'own_paste' ? 'My own text' : 'More passages'
+      })));
+    }
+    await db.setSetting('scenario_groups', pack.groups);
+
+    // the frame prompts join the prompt bank as their own group
+    const oldPrompts = (await db.all('prompts')).filter(p => !p.group);
+    if (oldPrompts.length) {
+      await db.putAll('prompts', oldPrompts.map(p => ({ ...p, group: 'more', group_label: 'More prompts' })));
+    }
+    const scenPrompts = pack.texts.filter(t => t.frame_prompt).map(t => ({
+      id: 'sp_' + t.id,
+      text: t.frame_prompt,
+      category: t.group,
+      structure_hint: t.structure_hint,
+      group: t.group,
+      group_label: t.group_label,
+      scenario_id: t.id,
+      scenario: t.title,
+      donts: t.donts || []
+    }));
+    await db.putAll('prompts', scenPrompts);
+
+    await db.setSetting('scenarios_version', SCENARIOS_VERSION);
+    report.scenarios = pack.texts.length;
+    report.scenario_prompts = scenPrompts.length;
   }
 
   if (!(await db.setting('install_date'))) await db.setSetting('install_date', today());

@@ -23,7 +23,7 @@ const $ = (id) => document.getElementById(id);
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
-const SCREENS = ['install','home','shadow','paste','pick','frame','clear','progress','help','grade','words','connect','log','people','person','done','settings'];
+const SCREENS = ['install','home','shadow','paste','pick','fgroup','frame','clear','progress','help','grade','words','connect','log','people','person','done','settings'];
 
 let session = null;      // the live session row
 let queue = [];          // remaining step names
@@ -172,6 +172,17 @@ async function startSession() {
   nextStep();
 }
 
+// M5: the session row carries which group and which scenario he actually spoke,
+// so the /redevelop skill can read the log later and know what was drilled.
+async function noteScenario(mode, group, groupLabel, name) {
+  if (!session) return;
+  session.scenarios = session.scenarios || [];
+  session.scenarios.push({ mode, group: group || null, group_label: groupLabel || null, name: name || null });
+  if (!session.scenario_group) { session.scenario_group = group || null; session.scenario_group_label = groupLabel || null; }
+  if (!session.scenario_name) session.scenario_name = name || null;
+  await db.put('sessions', session);
+}
+
 async function nextStep(skipped) {
   if (skipped) session.modes_skipped.push(skipped);
   const key = queue.shift();
@@ -201,7 +212,19 @@ async function endSession() {
   $('done-numbers').innerHTML = nums.map(([k, v]) =>
     '<div><div class="bignum">' + escapeHtml(v) + '</div><div class="small muted">' + escapeHtml(k) + '</div></div>').join('');
   $('done-feedback').textContent = await feedbackLine(results, m);
+  renderDonts();
   show('done');
+}
+
+// The DON'Ts belong to the scenario he just spoke in Frame. No scenario, or a
+// scenario that ships without them, means the card stays hidden.
+function renderDonts() {
+  const list = results.donts || [];
+  $('done-donts-card').hidden = list.length === 0;
+  if (!list.length) return;
+  $('done-donts-head').textContent = results.donts_scenario
+    ? 'Do not, ' + results.donts_scenario : 'Do not';
+  $('done-donts').innerHTML = list.map(d => '<li>' + escapeHtml(d) + '</li>').join('');
 }
 
 // The one line of feedback comes from the visible rules table in score.js.
@@ -275,11 +298,16 @@ async function runShadow() {
   renderShadowIntro();
 }
 
+// The weekday rotation default is a SCENARIO, not a generic passage. The
+// generic bank is still there, it is just the fallback and the "More passages"
+// group in the picker.
 async function pickPassage() {
   const texts = await db.all('texts');
   if (!texts.length) return null;
-  texts.sort((a, b) => (a.times_used || 0) - (b.times_used || 0) || String(a.id).localeCompare(String(b.id)));
-  return texts[0];
+  const scen = texts.filter(t => t.kind === 'scenario' || t.kind === 'monologue');
+  const pool = scen.length ? scen : texts;
+  pool.sort((a, b) => (a.times_used || 0) - (b.times_used || 0) || String(a.id).localeCompare(String(b.id)));
+  return pool[0];
 }
 
 function renderShadowIntro() {
@@ -290,11 +318,13 @@ function renderShadowIntro() {
   $('shadow-title').textContent = sh.text.title;
   $('shadow-preview').textContent = sh.text.body;
   $('shadow-hf').textContent = sh.handsFree ? 'On' : 'Off';
+  $('shadow-group').textContent = sh.text.group_label || 'More passages';
   $('shadow-actions').innerHTML = '<button class="primary huge" id="sh-go">Start</button>';
   $('sh-go').onclick = startShadow;
 }
 
 async function startShadow() {
+  await noteScenario('shadow', sh.text.group, sh.text.group_label, sh.text.title);
   // Everything that needs a user gesture happens right here, in the tap.
   await enableVoice();
   const mic = await micPermission();
@@ -487,16 +517,67 @@ async function savePaste() {
   renderShadowIntro();
 }
 
-async function openPick() {
+// Pick a group first, then a scenario inside it. The generic 20 live under
+// "More passages" at the bottom, still there, no longer the front door.
+const GROUP_ORDER = ['coffee', 'coworkers', 'cafe', 'networking', 'podcast', 'mine', 'more'];
+
+async function groupedTexts() {
   const texts = await db.all('texts');
-  $('pick-list').innerHTML = texts.map(t =>
-    '<li class="pick-row" data-id="' + t.id + '"><b>' + escapeHtml(t.title) + '</b>' +
-    '<div class="small muted">' + t.sentences.length + ' sentences, used ' + (t.times_used || 0) + ' times' +
+  const groups = new Map();
+  for (const t of texts) {
+    const id = t.group || 'more';
+    const label = t.group_label || 'More passages';
+    if (!groups.has(id)) groups.set(id, { id, label, rows: [] });
+    groups.get(id).rows.push(t);
+  }
+  const out = [...groups.values()];
+  out.sort((a, b) => {
+    const ia = GROUP_ORDER.indexOf(a.id), ib = GROUP_ORDER.indexOf(b.id);
+    return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.label.localeCompare(b.label);
+  });
+  for (const g of out) {
+    g.rows.sort((a, b) => (a.times_used || 0) - (b.times_used || 0) || String(a.id).localeCompare(String(b.id)));
+  }
+  return out;
+}
+
+let pickGroups = [];
+
+async function openPick() {
+  pickGroups = await groupedTexts();
+  $('pick-head').textContent = 'Scenarios';
+  $('pick-cancel').textContent = 'Cancel';
+  $('pick-list').hidden = true;
+  $('pick-groups').hidden = false;
+  $('pick-groups').innerHTML = pickGroups.map(g =>
+    '<li class="pick-grp" data-gid="' + escapeHtml(g.id) + '"><b>' + escapeHtml(g.label) + '</b>' +
+    '<div class="small muted">' + g.rows.length + (g.rows.length === 1 ? ' item' : ' items') + '</div></li>').join('');
+  for (const el of document.querySelectorAll('.pick-grp')) {
+    el.onclick = () => openPickGroup(el.dataset.gid);
+  }
+  show('pick');
+}
+
+function openPickGroup(gid) {
+  const g = pickGroups.find(x => x.id === gid);
+  if (!g) return openPick();
+  $('pick-head').textContent = g.label;
+  $('pick-cancel').textContent = 'Back';
+  $('pick-groups').hidden = true;
+  $('pick-list').hidden = false;
+  $('pick-list').innerHTML = g.rows.map(t =>
+    '<li class="pick-row" data-id="' + escapeHtml(t.id) + '"><b>' + escapeHtml(t.title) + '</b>' +
+    '<div class="small muted">' + t.sentences.length + ' lines, used ' + (t.times_used || 0) + ' times' +
     ((t.sentence_audio && t.sentence_audio.length) ? ', recorded voice' : ', phone voice') + '</div></li>').join('');
   for (const el of document.querySelectorAll('.pick-row')) {
     el.onclick = async () => { sh.text = await db.get('texts', el.dataset.id); show('shadow'); renderShadowIntro(); };
   }
-  show('pick');
+}
+
+function pickBack() {
+  if (!$('pick-list').hidden) return openPick();
+  show('shadow');
+  renderShadowIntro();
 }
 
 
@@ -559,16 +640,41 @@ async function runFrame() {
   await nextFrameRound();
 }
 
+// Which slice of the prompt bank Frame draws from. The default is the scenario
+// prompts, so the weekday Frame default is a real scenario, not a generic prompt.
+async function pickFramePrompt() {
+  const prompts = await db.all('prompts');
+  const want = await db.setting('frame_group', 'scenarios');
+  const scen = prompts.filter(p => p.scenario_id);
+  let pool;
+  if (want === 'scenarios') pool = scen;
+  else if (want === 'more') pool = prompts.filter(p => !p.scenario_id);
+  else pool = prompts.filter(p => p.group === want);
+  if (!pool.length) pool = scen.length ? scen : prompts;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+async function frameGroupLabel() {
+  const want = await db.setting('frame_group', 'scenarios');
+  if (want === 'scenarios') return 'Scenarios';
+  if (want === 'more') return 'More prompts';
+  const groups = await db.setting('scenario_groups', []);
+  const g = groups.find(x => x.id === want);
+  return g ? g.label : 'Scenarios';
+}
+
 async function nextFrameRound() {
   fr.round++;
-  const prompts = await db.all('prompts');
   const structures = await db.setting('structures', []);
-  fr.prompt = prompts[Math.floor(Math.random() * prompts.length)];
+  fr.prompt = await pickFramePrompt();
   fr.structure = structures.find(s => s.id === fr.prompt.structure_hint) || structures[0];
   fr.beats = fr.structure.beats.map(() => '');
   fr.hit = fr.structure.beats.map(() => false);
 
   $('frame-sub').textContent = 'Round ' + fr.round + ' of ' + (await timing('frame_rounds', 2));
+  $('frame-group').textContent = await frameGroupLabel();
+  $('frame-scenario').textContent = fr.prompt.scenario
+    ? (fr.prompt.group_label || '') + ((fr.prompt.group_label ? ' - ' : '') + fr.prompt.scenario) : '';
   $('frame-prompt').textContent = fr.prompt.text;
   $('frame-structure').textContent = fr.structure.name;
   $('frame-speak-card').hidden = true;
@@ -633,6 +739,13 @@ async function frameSpeak() {
     clip_id: clipId, ...score
   });
 
+  // the DON'Ts of the scenario he just spoke land on the done screen
+  if (fr.prompt.donts && fr.prompt.donts.length) {
+    results.donts = fr.prompt.donts;
+    results.donts_scenario = fr.prompt.scenario || null;
+  }
+  await noteScenario('frame', fr.prompt.group, fr.prompt.group_label, fr.prompt.scenario || fr.prompt.text);
+
   results.beats_hit = beatsHit;
   results.beats_total = fr.structure.beats.length;
   results.time_to_first_word_ms = firstWordAt ? (firstWordAt - startedAt) : null;
@@ -643,6 +756,32 @@ async function frameSpeak() {
   if (fr.round < (await timing('frame_rounds', 2))) return nextFrameRound();
   releaseMic();
   nextStep();
+}
+
+async function openFrameGroup() {
+  clearInterval(fr.timer);
+  const groups = await db.setting('scenario_groups', []);
+  const prompts = await db.all('prompts');
+  const count = (id) => id === 'scenarios' ? prompts.filter(p => p.scenario_id).length
+    : id === 'more' ? prompts.filter(p => !p.scenario_id).length
+    : prompts.filter(p => p.group === id).length;
+  const rows = [{ id: 'scenarios', label: 'Scenarios, all of them' }]
+    .concat(groups.filter(g => count(g.id) > 0).map(g => ({ id: g.id, label: g.label })))
+    .concat([{ id: 'more', label: 'More prompts' }]);
+  const want = await db.setting('frame_group', 'scenarios');
+  $('fgroup-list').innerHTML = rows.map(r =>
+    '<li class="fgroup-row' + (r.id === want ? ' on' : '') + '" data-gid="' + escapeHtml(r.id) + '">' +
+    '<b>' + escapeHtml(r.label) + '</b><div class="small muted">' + count(r.id) + ' prompts' +
+    (r.id === want ? ', in use' : '') + '</div></li>').join('');
+  for (const el of document.querySelectorAll('.fgroup-row')) {
+    el.onclick = async () => {
+      await db.setSetting('frame_group', el.dataset.gid);
+      show('frame');
+      fr.round--;               // re-render this same round with the new group
+      await nextFrameRound();
+    };
+  }
+  show('fgroup');
 }
 
 function abortFrame() {
@@ -676,7 +815,9 @@ async function runClear() {
 
 async function randomPrompt() {
   const prompts = await db.all('prompts');
-  return prompts[Math.floor(Math.random() * prompts.length)];
+  const generic = prompts.filter(p => !p.scenario_id);
+  const pool = generic.length ? generic : prompts;
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 function renderClearSetup() {
@@ -1077,8 +1218,9 @@ const HELP = [
   ['When to run it', 'Shadow and Words are the car modes, hands free, they read to you and advance themselves. Frame, Clear and Connect are the desk modes, 7:00 to 7:45 or 8:30 to 9:00. Weekends the same.'],
   ['The one rule', 'Never miss twice. One missed day does not break the streak. After a miss the next morning is the two minute version, and the app shortens it for you.'],
   ['Shadow', 'A voice reads one sentence, you repeat it, then you hear the model and yourself back to back. It ends with a cold read of the whole passage. You can paste your own text, a supplier email or a script, and shadow that instead.'],
+  ['Scenarios', 'Shadow opens on a real scenario, not a random passage. Tap Scenarios to pick the group first, coffee with her, coworkers, cafe, networking, or Podcast style, then the scenario. The old general passages are still there under More passages.'],
   ['Words', 'Ten cards. Say what it means out loud, tap to check, then say it in a sentence. A card you know but cannot use in a sentence goes back a box. That is on purpose. Knowing a word is not owning it.'],
-  ['Frame', 'A prompt, a structure, and thirty seconds to fill three beats. Then you talk for a minute with the beats on screen and tap each one as you hit it. The training is the thirty seconds, not the minute.'],
+  ['Frame', 'The prompt now comes from a scenario by default. Tap the button beside The prompt to change which group it draws from. After the take you get that scenario\'s do nots. A prompt, a structure, and thirty seconds to fill three beats. Then you talk for a minute with the beats on screen and tap each one as you hit it. The training is the thirty seconds, not the minute.'],
   ['Clear', 'Three takes on one topic. Take one is you. Take two adds pause instead of um. Take three adds one idea per sentence. You see the difference in numbers.'],
   ['Connect', 'One person card before a real conversation. What they said last time, one ask you can make, something to involve them in, and the thing they own. Then twenty seconds to log it after. The ask is the field that matters.'],
   ['If dictation does not work', 'Then the app plays your take back and you tap a counter every time you hear yourself say um. That is a better trainer anyway, because you have to hear it.'],
@@ -1254,6 +1396,8 @@ function wire() {
 
   $('shadow-quit').onclick = abortShadow;
   $('frame-quit').onclick = abortFrame;
+  $('frame-group').onclick = openFrameGroup;
+  $('fgroup-cancel').onclick = () => show('frame');
   $('clear-quit').onclick = abortClear;
   $('clear-change').onclick = async () => { cl.topic = await randomPrompt(); $('clear-topic').textContent = cl.topic.text; };
   $('speech-test').onclick = runSpeechTest;
@@ -1300,7 +1444,7 @@ function wire() {
   };
   $('paste-cancel').onclick = () => { show('shadow'); renderShadowIntro(); };
   $('paste-save').onclick = savePaste;
-  $('pick-cancel').onclick = () => { show('shadow'); renderShadowIntro(); };
+  $('pick-cancel').onclick = pickBack;
 
   $('enable-voice').onclick = async () => {
     const r = await enableVoice();
@@ -1357,6 +1501,6 @@ function wire() {
 }
 
 // expose a few things for the harness tests, never used by the UI
-window.__artic = { db, show, seedIfNeeded, dueWords, nextCardState, streakInfo, storageInfo, STEPS, splitSentences, sh, fr, cl, pickPassage, feedbackFor, scoreTake, renderProgress, renderHelp, grading };
+window.__artic = { db, show, seedIfNeeded, dueWords, nextCardState, streakInfo, storageInfo, STEPS, splitSentences, sh, fr, cl, pickPassage, pickFramePrompt, groupedTexts, openPick, openPickGroup, openFrameGroup, feedbackFor, scoreTake, renderProgress, renderHelp, grading, session: () => session, results: () => results };
 
 boot();
