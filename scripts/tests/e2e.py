@@ -124,8 +124,8 @@ def main():
         check("no real first name shipped in the data", scen["leak"] is False, scen["leak"])
         check("all 17 scenarios have a full set of rendered sentence clips",
               scen["withAudio"] == 17, scen["withAudio"])
-        check("5 of the 6 monologues have rendered clips, the sixth falls back to the phone voice",
-              scen["monoWithAudio"] == 5, scen["monoWithAudio"])
+        check("all 6 monologues have rendered clips",
+              scen["monoWithAudio"] == 6, scen["monoWithAudio"])
         check("17 scenario frame prompts joined the prompt bank",
               scen["scenPrompts"] == 17, scen["scenPrompts"])
         check("11 of them carry three DON'Ts", scen["promptsWithDonts"] == 11, scen["promptsWithDonts"])
@@ -209,9 +209,9 @@ def main():
         print("\n== audio assets ==")
         audio = page.evaluate("""async () => {
             const a = window.__artic;
-            // mo06 was deliberately left unrendered when the character budget ran
-            // out, so the rule is: every row that HAS clips has one per sentence,
-            // and a row with none falls back to the phone voice.
+            // Every text row is now fully rendered. The rule stays: every row that
+            // HAS clips has one per sentence, and a row with none falls back to the
+            // phone voice, but there should be zero such rows now.
             const texts = (await a.db.all('texts')).filter(t=>t.source_type!=='own_paste');
             const matched = texts.every(t => (t.sentence_audio||[]).length === 0
                                           || (t.sentence_audio||[]).length === t.sentences.length);
@@ -225,8 +225,8 @@ def main():
             return {matched, noAudio, heads: out, total: texts.reduce((n,t)=>n+(t.sentence_audio||[]).length,0)};
         }""")
         check("every rendered passage has one mp3 per sentence", audio["matched"], audio["total"])
-        check("only the one budget casualty falls back to the phone voice",
-              audio["noAudio"] == ["mo06"], audio["noAudio"])
+        check("no row falls back to the phone voice, every row is rendered",
+              audio["noAudio"] == [], audio["noAudio"])
         # GitHub Pages labels mp3 as audio/mp3, a local python server says audio/mpeg.
         # Both are mp3 and every browser plays both, so accept either.
         check("sentence and passage mp3 all return 200 and an mp3 content type",
