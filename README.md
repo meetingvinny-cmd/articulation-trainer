@@ -162,6 +162,14 @@ Fields a reader should know about:
 | `sessions.floor_session` | true means it was the two minute version after a missed day |
 | `sessions.modes_skipped` | which modes he dodged. The pattern here is the useful signal |
 
+Since M5 (scenarios), each session row also carries:
+
+    "scenario_group": "coffee",              // coffee | coworkers | cafe | networking | podcast | more
+    "scenario_group_label": "coffee with her",
+    "scenario_name": "The sit-down and the first 60 seconds",
+    "scenarios": [ { "id": "...", "group": "...", "name": "..." } ]
+
+
 ## Vocabulary decks
 
 **Core 300.** Authored for this app: 6 tiers of 50, every definition and every example
